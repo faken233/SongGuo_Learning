@@ -1,18 +1,18 @@
 package pojo;
 
 public class Student {
-    private String studentID;
+    private Integer studentID;
     private String name;
     private String grade;
     private String className;
     private String phoneNumber;
     private String encryptedPassword;
 
-    public String getStudentID() {
+    public Integer getStudentID() {
         return studentID;
     }
 
-    public void setStudentID(String studentID) {
+    public void setStudentID(Integer studentID) {
         this.studentID = studentID;
     }
 
@@ -60,7 +60,7 @@ public class Student {
         this.phoneNumber = phoneNumber;
     }
 
-    public Student(String studentID, String name, String grade, String className, String phoneNumber, String encryptedPassword) {
+    public Student(Integer studentID, String name, String grade, String className, String phoneNumber, String encryptedPassword) {
         this.studentID = studentID;
         this.name = name;
         this.grade = grade;

@@ -59,7 +59,7 @@ public class ConnectionPool implements MyConnectionPool {
                     System.out.println(Thread.currentThread().getName()
                             + "connected for too long:"
                             + connection
-                            + ",abandoned connection, empty connection:"
+                            + ", abandon this connection, empty connection:"
                             + connectionsFree.size()
                             + ",now using connections:" + connectionsUsed.size());
                     try {
@@ -115,7 +115,7 @@ public class ConnectionPool implements MyConnectionPool {
                 return connection;
             } else {
                 //总链接数大于最大数
-                System.out.println("no empty connection! waiting for new connection:");
+                System.out.println("no empty connection! waiting for new connection...");
                 this.wait(Integer.parseInt(DataSourceConfig.getWaitTime()));
                 //递归,再次尝试
                 connection = getConnection();
@@ -137,8 +137,8 @@ public class ConnectionPool implements MyConnectionPool {
         notifyAll();
         //放入空闲连接池
         connectionsFree.add(connection);
-        System.out.println("one connection finished, now released connection:"
-                + connectionsFree.size() + "using connections:" + connectionsUsed.size()
+        System.out.println("one connection finished, now released connections:"
+                + connectionsFree.size() + ", using connections:" + connectionsUsed.size()
                 );
     }
 }
