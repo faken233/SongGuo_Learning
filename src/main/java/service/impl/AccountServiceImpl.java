@@ -3,7 +3,6 @@ package service.impl;
 import com.alibaba.fastjson.JSONObject;
 import constnum.ConstNum;
 import dao.AccountMapper;
-import pojo.SaltMap;
 import pojo.Student;
 import pojo.Teacher;
 import service.AccountService;
@@ -12,7 +11,6 @@ import utils.mybatis.utils.MapperProxyFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
-
 public class AccountServiceImpl implements AccountService {
 
     private final AccountMapper accountMapper = MapperProxyFactory.getMapper(AccountMapper.class);
@@ -35,24 +33,50 @@ public class AccountServiceImpl implements AccountService {
             //1是教师 校验
             if (newUser.getInteger("teacherCertificate").equals(ConstNum.teacherCertificate)) {
                 // 通过认证, 处理数据
-                String id = generateID(true);
-                accountMapper.insertNewSaltMap(Integer.valueOf(id), newUser.getString("salt"));
-                return accountMapper.insertNewTeacher(Integer.valueOf(id),
+
+                int id = Integer.parseInt(generateID(true));
+                accountMapper.insertNewTeacher(id,
                         newUser.getString("name"),
                         newUser.getString("phoneNumber"),
                         newUser.getString("password")
                 );
+                return id;
+            } else {
+                return -1;
             }
         }else if (accountType == 2) {
             //2为学生
-            String id = generateID(false);
-            accountMapper.insertNewSaltMap(Integer.valueOf(id), newUser.getString("salt"));
-            return accountMapper.insertNewStudent(Integer.valueOf(id),
+            int id = Integer.parseInt(generateID(true));
+            accountMapper.insertNewStudent(id,
                     newUser.getString("name"),
                     newUser.getString("phoneNumber"),
                     newUser.getString("password")
             );
+            return id;
         }
+        return 0;
+    }
+
+    @Override
+    public Object loginValidation(String userID, String type) {
+        return Integer.parseInt(type) == ConstNum.Teacher ? accountMapper.getTeacherByID(Integer.parseInt(userID)) : accountMapper.getStudentByID(Integer.parseInt(userID));
+    }
+
+    @Override
+    public int loginConfirmation(String userid, String password, String type) {
+        if (Integer.parseInt(type) == ConstNum.Teacher) {
+            Teacher teacherByIDAndPassword = accountMapper.getTeacherByIDAndPassword(Integer.parseInt(userid), password);
+            if (teacherByIDAndPassword != null) {
+                return 1;
+            }else {
+                return 0;
+            }
+        }else if (Integer.parseInt(type) == ConstNum.Student) {
+            Student studentByIDAndPassword = accountMapper.getStudentByIDAndPassword(Integer.parseInt(userid), password);
+            if (studentByIDAndPassword != null) {
+                return 1;
+            }
+        }else return 0;
         return 0;
     }
 

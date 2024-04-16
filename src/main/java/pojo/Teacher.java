@@ -1,7 +1,7 @@
 package pojo;
 
 public class Teacher {
-    private int teacherID;
+    private Integer teacherID;
     private String name;
     private String phoneNumber;
     private String email;
@@ -9,35 +9,35 @@ public class Teacher {
     private String description;
     private String encryptedPassword;
 
-    public int getTeacherID() {
+    public int getteacherID() {
         return teacherID;
     }
 
-    public void setTeacherID(int teacherID) {
+    public void setteacherID(Integer teacherID) {
         this.teacherID = teacherID;
     }
 
-    public String getName() {
+    public String getname() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setname(String name) {
         this.name = name;
     }
 
-    public String getPhoneNumber() {
+    public String getphoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setphoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getEmail() {
+    public String getemail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setemail(String email) {
         this.email = email;
     }
 
