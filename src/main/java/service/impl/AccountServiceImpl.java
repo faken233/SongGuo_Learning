@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
             }
         }else if (accountType == 2) {
             //2为学生
-            int id = Integer.parseInt(generateID(true));
+            int id = Integer.parseInt(generateID(false));
             accountMapper.insertNewStudent(id,
                     newUser.getString("name"),
                     newUser.getString("phoneNumber"),

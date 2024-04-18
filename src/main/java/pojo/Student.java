@@ -12,7 +12,7 @@ public class Student {
         return studentID;
     }
 
-    public void setStudentID(Integer studentID) {
+    public void setstudentID(Integer studentID) {
         this.studentID = studentID;
     }
 
@@ -20,7 +20,7 @@ public class Student {
         return name;
     }
 
-    public void setName(String name) {
+    public void setname(String name) {
         this.name = name;
     }
 
@@ -28,7 +28,7 @@ public class Student {
         return grade;
     }
 
-    public void setGrade(String grade) {
+    public void setgrade(String grade) {
         this.grade = grade;
     }
 
@@ -36,7 +36,7 @@ public class Student {
         return className;
     }
 
-    public void setClassName(String className) {
+    public void setclassName(String className) {
         this.className = className;
     }
 
@@ -44,7 +44,7 @@ public class Student {
         return encryptedPassword;
     }
 
-    public void setEncryptedPassword(String encryptedPassword) {
+    public void setencryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
     }
 
@@ -56,7 +56,7 @@ public class Student {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setphoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
