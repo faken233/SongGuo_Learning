@@ -45,7 +45,7 @@ public class ConnectionPool implements MyConnectionPool {
 
         @Override
         public void run() {
-            System.out.println("Time Check");
+//            System.out.println("Time Check");
             //遍历正在使用的连接池,检查是否超时
             for (ConnectionEntity connectionEntity : connectionsUsed) {
                 Connection connection = connectionEntity.getConnection();

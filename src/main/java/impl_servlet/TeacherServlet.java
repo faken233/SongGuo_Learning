@@ -2,6 +2,7 @@ package impl_servlet;
 
 import base_servlet.TeacherBaseServlet;
 import com.alibaba.fastjson.JSON;
+import pojo.Course;
 import pojo.Result;
 import pojo.Teacher;
 import service.TeacherService;
@@ -11,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.List;
 
 @WebServlet("/teacher/*")
 public class TeacherServlet extends TeacherBaseServlet {
@@ -36,6 +39,34 @@ public class TeacherServlet extends TeacherBaseServlet {
         } else {
             rs = JSON.toJSONString(Result.success("UPDATE_ERROR"));
         }
+        resp.getWriter().write(rs);
+    }
+
+    public void addCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String s = req.getReader().readLine();
+        Course course = JSON.parseObject(s, Course.class);
+
+        String courseName = course.getCourseName();
+        String description = course.getDescription();
+        int teacherID = course.getTeacherID();
+        Timestamp startDateTime = course.getStartDateTime();
+        Timestamp endDateTime = course.getEndDateTime();
+        int maxStudents = course.getMaxStudents();
+
+        int i = teacherService.addNewCourse(teacherID, courseName, description, startDateTime, endDateTime, maxStudents);
+        if (i > 0) {
+            String rs = JSON.toJSONString(Result.success("ADD_OK"));
+            resp.getWriter().write(rs);
+        } else {
+            String rs = JSON.toJSONString(Result.success("ADD_ERROR"));
+            resp.getWriter().write(rs);
+        }
+    }
+
+    public void selectCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int teacherID = Integer.parseInt(req.getParameter("id"));
+        List<Course> courses = teacherService.selectCourses(teacherID);
+        String rs = JSON.toJSONString(Result.success("SELECT_OK", courses));
         resp.getWriter().write(rs);
     }
 }
