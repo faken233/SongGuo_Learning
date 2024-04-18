@@ -8,13 +8,14 @@ import utils.mybatis.iface.TypeHandler;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.sql.*;
+import java.sql.Array;
 import java.util.*;
 
 //制造mapper代理对象
 public class MapperProxyFactory {
 
     private static final Map<Class, TypeHandler> typeHandlerMap = new HashMap<>();
-    private static final ConnectionPool connectionPool;
+    public static final ConnectionPool connectionPool;
 
     static {
         try {
@@ -25,6 +26,7 @@ public class MapperProxyFactory {
         //注册TypeHandler
         typeHandlerMap.put(Integer.class, new IntegerTypeHandler());
         typeHandlerMap.put(String.class, new StringTypeHandler());
+        typeHandlerMap.put(Timestamp.class, new TimestampTypeHandler());
     }
 
     public static <T> T getMapper(Class<T> mapper) {
@@ -122,6 +124,7 @@ public class MapperProxyFactory {
                         }
 
                         connectionPool.releaseConnection(connection);
+                        resultSet.close();
                         //9. 根据方法返回类型返回
                         if (method.getReturnType().equals(List.class)) {
                             return list;
