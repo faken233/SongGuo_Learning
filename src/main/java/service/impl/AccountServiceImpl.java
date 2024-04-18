@@ -63,21 +63,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public int loginConfirmation(String userid, String password, String type) {
+    public Object loginConfirmation(String userid, String password, String type) {
         if (Integer.parseInt(type) == ConstNum.Teacher) {
-            Teacher teacherByIDAndPassword = accountMapper.getTeacherByIDAndPassword(Integer.parseInt(userid), password);
-            if (teacherByIDAndPassword != null) {
-                return 1;
-            }else {
-                return 0;
-            }
+            return accountMapper.getTeacherByIDAndPassword(Integer.parseInt(userid), password);
         }else if (Integer.parseInt(type) == ConstNum.Student) {
-            Student studentByIDAndPassword = accountMapper.getStudentByIDAndPassword(Integer.parseInt(userid), password);
-            if (studentByIDAndPassword != null) {
-                return 1;
-            }
-        }else return 0;
-        return 0;
+            return accountMapper.getStudentByIDAndPassword(Integer.parseInt(userid), password);
+        }else return null;
     }
 
     public String generateID(boolean isTeacher) {

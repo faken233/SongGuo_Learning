@@ -3,13 +3,20 @@ package impl_servlet;
 import base_servlet.AccountBaseServlet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import constnum.ConstString;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import pojo.Result;
+import pojo.Student;
+import pojo.Teacher;
 import service.AccountService;
 import service.impl.AccountServiceImpl;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,9 +47,7 @@ public class AccountServlet extends AccountBaseServlet {
 
         // 验证是否为新用户
         if (received == null) {
-            // b为真值则未找到传入的userID对应的盐值, 即新用户, 生成盐值返回前端进行加密后再次传输给后台
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
+            // b为真值则未找到传入的电话对应的用户
             String rs = JSON.toJSONString(Result.success("VALIDATION_PASSED"));
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(rs);
@@ -54,9 +59,7 @@ public class AccountServlet extends AccountBaseServlet {
     }
 
     public void createAccount(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // 前端传输的一个账户信息会包含id/已加密密码/盐值/身份类型/教师凭证, 需要进行处理
-        resp.setContentType("text/json;charset=utf-8");
-        resp.setCharacterEncoding("UTF-8");
+        // 前端传输的一个账户信息会包含id/已加密密码/身份类型/教师凭证, 需要进行处理
         String reqData = req.getReader().readLine();
         if (reqData == null && req.getMethod().equals("OPTIONS")) {
             resp.setStatus(HttpServletResponse.SC_OK);
@@ -78,13 +81,11 @@ public class AccountServlet extends AccountBaseServlet {
     }
 
     public void loginValidation(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/json;charset=utf-8");
-        resp.setCharacterEncoding("UTF-8");
         String userid = req.getParameter("userid");
         String type = req.getParameter("type");
         Object o = accountService.loginValidation(userid, type);
         if (o != null) {
-            // 存在用户, 返回盐值
+            // 存在用户
             String rs = JSON.toJSONString(Result.success("LOGIN_VALIDATION_SUCCESS"));
             resp.getWriter().write(rs);
         }
@@ -95,16 +96,21 @@ public class AccountServlet extends AccountBaseServlet {
     }
 
     public void loginConfirmation(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/json;charset=utf-8");
-        resp.setCharacterEncoding("UTF-8");
         String type = req.getParameter("type");
         String userid = req.getParameter("userid");
         String password = req.getParameter("password");
-        int confirmation = accountService.loginConfirmation(userid, password, type);
-        if (confirmation == 1) {
-            String rs = JSON.toJSONString(Result.success("LOGIN_CONFIRMATION_SUCCESS"));
+        Object o = accountService.loginConfirmation(userid, password, type);
+        if (o instanceof Teacher || o instanceof Student) {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("userid", userid);
+            String Jwt = Jwts.builder()
+                    .signWith(SignatureAlgorithm.HS256, ConstString.JwtKey)// 签名算法 密钥
+                    .setClaims(claims)// 载荷
+                    .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000 * 3))// 三小时有效期
+                    .compact();
+            String rs = JSON.toJSONString(Result.success("LOGIN_CONFIRMATION_SUCCESS", Jwt));
             resp.getWriter().write(rs);
-        } else if (confirmation == 0) {
+        } else if (o == null) {
             String rs = JSON.toJSONString(Result.error("LOGIN_CONFIRMATION_FAILED"));
             resp.getWriter().write(rs);
         }
