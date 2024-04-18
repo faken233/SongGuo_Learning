@@ -9,5 +9,5 @@ public interface AccountService {
     Student validateIsNewStudentAccount(String phoneNumber);
     int createNewAccount(JSONObject newUser);
     Object loginValidation(String userID, String type);
-    int loginConfirmation(String userid, String password, String type);
+    Object loginConfirmation(String userid, String password, String type);
 }
