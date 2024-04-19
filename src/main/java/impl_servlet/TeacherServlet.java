@@ -2,6 +2,7 @@ package impl_servlet;
 
 import base_servlet.TeacherBaseServlet;
 import com.alibaba.fastjson.JSON;
+import pojo.Chapter;
 import pojo.Course;
 import pojo.Result;
 import pojo.Teacher;
@@ -67,6 +68,26 @@ public class TeacherServlet extends TeacherBaseServlet {
         int teacherID = Integer.parseInt(req.getParameter("id"));
         List<Course> courses = teacherService.selectCourses(teacherID);
         String rs = JSON.toJSONString(Result.success("SELECT_OK", courses));
+        resp.getWriter().write(rs);
+    }
+
+    public void selectCourseChaptersByCourseID(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int courseID = Integer.parseInt(req.getParameter("courseID"));
+        List<Chapter> chapters = teacherService.selectChaptersByCourseID(courseID);
+        String rs = JSON.toJSONString(Result.success("SELECT_OK", chapters));
+        resp.getWriter().write(rs);
+    }
+
+    public void addNewChapterToCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String s = req.getReader().readLine();
+        Chapter chapter = JSON.parseObject(s, Chapter.class);
+        int i = teacherService.addNewChapter(chapter);
+        String rs;
+        if (i > 0) {
+            rs = JSON.toJSONString(Result.success("ADD_OK"));
+        } else {
+            rs = JSON.toJSONString(Result.success("ADD_ERROR"));
+        }
         resp.getWriter().write(rs);
     }
 }
