@@ -3,6 +3,7 @@ package service.impl;
 import constnum.ConstNum;
 import dao.AccountMapper;
 import dao.TeacherMapper;
+import pojo.Chapter;
 import pojo.Course;
 import pojo.Teacher;
 import service.TeacherService;
@@ -42,6 +43,34 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<Course> selectCourses(int teacherID) {
         return teacherMapper.selectCourses(teacherID);
+    }
+
+    @Override
+    public List<Chapter> selectChaptersByCourseID(int courseID) {
+        return teacherMapper.selectChaptersByCourseID(courseID);
+    }
+
+    @Override
+    public int addNewChapter(Chapter chapter) {
+        Integer chapterID = generateChapterID();
+        Integer courseID = chapter.getCourseID();
+        String chapterName = chapter.getChapterName();
+        String content = chapter.getContent();
+        return teacherMapper.addNewChapter(chapterID, courseID, chapterName, content);
+    }
+
+    private int generateChapterID() {
+        String firstDigit = String.valueOf(ConstNum.Chapter);
+
+        // 根据当前时间生成接下来六位
+        LocalDateTime now = LocalDateTime.now();
+        String timePart = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
+
+        // 随机生成二位数
+        String randomPart = generateRandomDigits();
+
+        // 拼接生成完整的ID
+        return Integer.parseInt(firstDigit + timePart + randomPart);
     }
 
     public int generateCourseID(){
