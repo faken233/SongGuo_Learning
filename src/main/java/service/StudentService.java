@@ -11,7 +11,7 @@ public interface StudentService {
 
     int updateInfo(Student student);
 
-    List<Course> selectParticipatableCourses() throws SQLException, ClassNotFoundException, InterruptedException;
+    List<Course> selectParticipatableCourses(int studentID) throws SQLException, ClassNotFoundException, InterruptedException;
 
     int participateCourse(int studentID, int courseID);
 
