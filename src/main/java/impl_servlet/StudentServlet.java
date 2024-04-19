@@ -41,8 +41,9 @@ public class StudentServlet extends StudentBaseServlet {
         resp.getWriter().write(rs);
     }
 
-    public void selectParticipateCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
-        List<Course> courses = studentService.selectParticipatableCourses();
+    public void selectParticipatableCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+        int studentID = Integer.parseInt(req.getParameter("studentID"));
+        List<Course> courses = studentService.selectParticipatableCourses(studentID);
         String rs = JSON.toJSONString(Result.success("OK", courses));
         resp.getWriter().write(rs);
     }
@@ -53,9 +54,9 @@ public class StudentServlet extends StudentBaseServlet {
         int i = studentService.participateCourse(studentID, courseID);
         String rs;
         if (i > 0) {
-            rs = JSON.toJSONString(Result.success("OK"));
+            rs = JSON.toJSONString(Result.success("ENROLL_OK"));
         } else {
-            rs = JSON.toJSONString(Result.success("ERROR"));
+            rs = JSON.toJSONString(Result.success("ENROLL_ERROR"));
         }
         resp.getWriter().write(rs);
     }

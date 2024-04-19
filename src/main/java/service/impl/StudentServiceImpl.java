@@ -3,11 +3,12 @@ package service.impl;
 import dao.AccountMapper;
 import dao.StudentMapper;
 import pojo.Course;
+import pojo.EnrolledCourseMap;
 import pojo.Student;
 import service.StudentService;
 import utils.mybatis.utils.MapperProxyFactory;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentServiceImpl implements StudentService {
@@ -30,8 +31,25 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Course> selectParticipatableCourses() throws SQLException, ClassNotFoundException, InterruptedException {
-        return studentMapper.selectParticipateCourses();
+    public List<Course> selectParticipatableCourses(int studentID) {
+        // 所有在时间内的课程
+        List<Course> courses = studentMapper.selectParticipateCourses();
+
+        // 学生已经参与过的课程
+        List<EnrolledCourseMap> enrolledCourseMaps = studentMapper.selectAlreadyParticipatedCourses(studentID);
+
+        // courses里面剔除掉enrolledCourseMaps含有的课程
+        // 1.拿到所有参与过的课程ID
+        List<Integer> enrolledCourseIDs = new ArrayList<>();
+        for (EnrolledCourseMap enrolledCourseMap : enrolledCourseMaps) {
+            enrolledCourseIDs.add(enrolledCourseMap.getCourseID());
+        }
+
+        // 2.遍历courses, 剔除ID包括在enrolledCourseIDs里面的课程
+        courses.removeIf(course -> enrolledCourseIDs.contains(course.getCourseID()));
+
+        // 得到所有可参与的课程courses
+        return courses;
     }
 
     @Override

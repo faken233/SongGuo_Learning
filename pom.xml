@@ -12,7 +12,7 @@
 <!--      单元测试-->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -56,6 +56,13 @@
           <artifactId>jjwt</artifactId>
           <version>0.9.1</version>
       </dependency>
+      <dependency>
+          <groupId>org.junit.jupiter</groupId>
+          <artifactId>junit-jupiter</artifactId>
+          <version>RELEASE</version>
+          <scope>test</scope>
+      </dependency>
+
   </dependencies>
   <build>
     <finalName>SongGuo_Learning</finalName>
