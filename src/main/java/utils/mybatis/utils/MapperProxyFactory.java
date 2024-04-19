@@ -8,7 +8,6 @@ import utils.mybatis.iface.TypeHandler;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.sql.*;
-import java.sql.Array;
 import java.util.*;
 
 //制造mapper代理对象
@@ -27,6 +26,7 @@ public class MapperProxyFactory {
         typeHandlerMap.put(Integer.class, new IntegerTypeHandler());
         typeHandlerMap.put(String.class, new StringTypeHandler());
         typeHandlerMap.put(Timestamp.class, new TimestampTypeHandler());
+        typeHandlerMap.put(Boolean.class, new BooleanTypeHandler());
     }
 
     public static <T> T getMapper(Class<T> mapper) {

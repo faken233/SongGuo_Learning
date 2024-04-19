@@ -1,5 +1,6 @@
 package dao;
 
+import pojo.Chapter;
 import pojo.Course;
 import utils.mybatis.anno.InsertFaken;
 import utils.mybatis.anno.ParamFaken;
@@ -25,4 +26,14 @@ public interface TeacherMapper {
 
     @SelectFaken("select * from courses where teacherID = #{teacherID}")
     List<Course> selectCourses(@ParamFaken("teacherID") Integer teacherID);
+
+    @SelectFaken("select * from chapters where courseID = #{courseID}")
+    List<Chapter> selectChaptersByCourseID(@ParamFaken("courseID") Integer courseID);
+
+    @InsertFaken("insert into chapters (chapterID, courseID, chapterName, content) " +
+            "values (#{chapterID}, #{courseID}, #{chapterName}, #{content})")
+    int addNewChapter(@ParamFaken("chapterID") Integer chapterID,
+                      @ParamFaken("courseID") Integer courseID,
+                      @ParamFaken("chapterName") String chapterName,
+                      @ParamFaken("content") String content);
 }
