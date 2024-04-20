@@ -6,12 +6,17 @@ import dao.TeacherMapper;
 import pojo.Chapter;
 import pojo.Course;
 import pojo.Teacher;
+import pojo.question.MultipleChoiceQuestion;
+import pojo.question.Question;
+import pojo.question.ShortAnswerQuestion;
+import pojo.question.TrueFalseQuestion;
 import service.TeacherService;
 import utils.mybatis.utils.MapperProxyFactory;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -42,7 +47,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public List<Course> selectCourses(int teacherID) {
-        return teacherMapper.selectCourses(teacherID);
+        return teacherMapper.selectCoursesByTeacherID(teacherID);
     }
 
     @Override
@@ -57,6 +62,52 @@ public class TeacherServiceImpl implements TeacherService {
         String chapterName = chapter.getChapterName();
         String content = chapter.getContent();
         return teacherMapper.addNewChapter(chapterID, courseID, chapterName, content);
+    }
+
+    @Override
+    public int addQuestionToChapter(Question question, int type) {
+        Integer questionID = generateQuestionID(type);
+        Integer chapterID = question.getChapterID();
+        String content = question.getContent();
+        int i = 0;
+        if (type == ConstNum.TrueFalseQuestion) {
+            String answer = ((TrueFalseQuestion) question).getAnswer();
+            i = teacherMapper.addTrueFalseQuestion(questionID, chapterID, type, content, answer);
+        } else if (type == ConstNum.ShortAnswerQuestion) {
+            String answer = ((ShortAnswerQuestion) question).getAnswer();
+            i = teacherMapper.addShortAnswerQuestion(questionID, chapterID, type, content, answer);
+        } else if (type == ConstNum.MultipleChoiceQuestion) {
+            String answer = ((MultipleChoiceQuestion) question).getAnswer();
+            String options = ((MultipleChoiceQuestion) question).getOptions();
+            i = teacherMapper.addMultipleChoiceQuestion(questionID, chapterID, type, content, answer, options);
+        }
+        return i;
+    }
+
+    @Override
+    public List<Question> selectQuestionsByChapterID(int chapterID) {
+        List<Question> questionList = new ArrayList<>();
+        List<TrueFalseQuestion> trueFalseQuestions = teacherMapper.selectTrueFalseQuestionsByChapterID(chapterID);
+        List<MultipleChoiceQuestion> multipleChoiceQuestions = teacherMapper.selectMultipleChoiceQuestionsByChapterID(chapterID);
+        List<ShortAnswerQuestion> shortAnswerQuestions = teacherMapper.selectShortAnswerQuestionsByChapterID(chapterID);
+        questionList.addAll(trueFalseQuestions);
+        questionList.addAll(multipleChoiceQuestions);
+        questionList.addAll(shortAnswerQuestions);
+        return questionList;
+    }
+
+    private Integer generateQuestionID(int type) {
+        String firstDigit = String.valueOf(type);
+
+        // 根据当前时间生成接下来六位
+        LocalDateTime now = LocalDateTime.now();
+        String timePart = now.format(DateTimeFormatter.ofPattern("yyMMdd"));
+
+        // 随机生成二位数
+        String randomPart = generateRandomDigits();
+
+        // 拼接生成完整的ID
+        return Integer.parseInt(firstDigit + timePart + randomPart);
     }
 
     private int generateChapterID() {

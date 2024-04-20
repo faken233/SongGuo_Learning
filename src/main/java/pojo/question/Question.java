@@ -3,7 +3,7 @@ package pojo.question;
 public class Question {
     private Integer questionID;
     private Integer chapterID;
-    private int type;
+    private Integer type;
     private String content;
 
 
@@ -37,7 +37,7 @@ public class Question {
         return type;
     }
 
-    public void settype(int type) {
+    public void settype(Integer type) {
         this.type = type;
     }
 
