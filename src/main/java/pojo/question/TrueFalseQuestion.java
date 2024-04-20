@@ -18,4 +18,24 @@ public class TrueFalseQuestion extends Question{
     public void setanswer(String answer) {
         this.answer = answer;
     }
+
+    @Override
+    public void setchapterID(Integer chapterID) {
+        super.setchapterID(chapterID);
+    }
+
+    @Override
+    public void setquestionID(Integer questionID) {
+        super.setquestionID(questionID);
+    }
+
+    @Override
+    public void settype(Integer type) {
+        super.settype(type);
+    }
+
+    @Override
+    public void setcontent(String content) {
+        super.setcontent(content);
+    }
 }

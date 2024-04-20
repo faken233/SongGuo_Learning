@@ -2,10 +2,15 @@ package impl_servlet;
 
 import base_servlet.TeacherBaseServlet;
 import com.alibaba.fastjson.JSON;
+import constnum.ConstNum;
 import pojo.Chapter;
 import pojo.Course;
 import pojo.Result;
 import pojo.Teacher;
+import pojo.question.MultipleChoiceQuestion;
+import pojo.question.Question;
+import pojo.question.ShortAnswerQuestion;
+import pojo.question.TrueFalseQuestion;
 import service.TeacherService;
 import service.impl.TeacherServiceImpl;
 
@@ -88,6 +93,34 @@ public class TeacherServlet extends TeacherBaseServlet {
         } else {
             rs = JSON.toJSONString(Result.success("ADD_ERROR"));
         }
+        resp.getWriter().write(rs);
+    }
+
+    public void addQuestionToChapter(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int type = Integer.parseInt(req.getParameter("questionType"));
+        String s = req.getReader().readLine();
+        Question question = null;
+        if (type == ConstNum.TrueFalseQuestion) {
+            question = JSON.parseObject(s, TrueFalseQuestion.class);
+        } else if (type == ConstNum.ShortAnswerQuestion) {
+            question = JSON.parseObject(s, ShortAnswerQuestion.class);
+        } else if (type == ConstNum.MultipleChoiceQuestion) {
+            question = JSON.parseObject(s, MultipleChoiceQuestion.class);
+        }
+
+        int i = teacherService.addQuestionToChapter(question, type);
+
+        if (i > 0) {
+            resp.getWriter().write(JSON.toJSONString(Result.success("ADD_OK", question)));
+        } else {
+            String rs = JSON.toJSONString(Result.success("ADD_ERROR"));
+        }
+    }
+
+    public void getChapterQuestions (HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int chapterID = Integer.parseInt(req.getParameter("chapterID"));
+        List<Question> questionList = teacherService.selectQuestionsByChapterID(chapterID);
+        String rs = JSON.toJSONString(Result.success("SELECT_OK", questionList));
         resp.getWriter().write(rs);
     }
 }

@@ -3,6 +3,7 @@ package service;
 import pojo.Chapter;
 import pojo.Course;
 import pojo.Teacher;
+import pojo.question.Question;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -15,4 +16,8 @@ public interface TeacherService {
     List<Chapter> selectChaptersByCourseID(int courseID);
 
     int addNewChapter(Chapter chapter);
+
+    int addQuestionToChapter(Question question, int type);
+
+    List<Question> selectQuestionsByChapterID(int chapterID);
 }

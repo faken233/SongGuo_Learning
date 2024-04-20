@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 
 @WebFilter("/*")
@@ -20,6 +19,10 @@ public class Filter implements javax.servlet.Filter {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         String requestURI = request.getRequestURI();
 
         if (request.getMethod().equals("OPTIONS")) {
