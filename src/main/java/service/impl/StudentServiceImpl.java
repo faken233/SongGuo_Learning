@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Course> selectParticipatableCourses(int studentID) {
         // 所有在时间内的课程
-        List<Course> courses = studentMapper.selectParticipateCourses();
+        List<Course> courses = studentMapper.selectParticipatableCourses();
 
         // 学生已经参与过的课程
         List<EnrolledCourseMap> enrolledCourseMaps = studentMapper.selectAlreadyParticipatedCourses(studentID);
@@ -56,4 +56,55 @@ public class StudentServiceImpl implements StudentService {
     public int participateCourse(int studentID, int courseID) {
         return studentMapper.participateCourse(studentID, courseID);
     }
+
+    @Override
+    public List<Course> selectParticipatedCourses(int studentID) {
+        // 所有在时间内的课程
+        List<Course> courses = studentMapper.selectParticipatableCourses();
+
+        // 学生已经参与过的课程
+        List<EnrolledCourseMap> enrolledCourseMaps = studentMapper.selectAlreadyParticipatedCourses(studentID);
+
+        // 学生参与过的课程ID的集合
+        List<Integer> enrolledCourseIDs = new ArrayList<>();
+        for (EnrolledCourseMap enrolledCourseMap : enrolledCourseMaps) {
+            enrolledCourseIDs.add(enrolledCourseMap.getCourseID());
+        }
+
+        //courses里面根据Maps取得学生参与过的课程
+        courses.removeIf(course -> !(enrolledCourseIDs.contains(course.getCourseID())));
+
+        return courses;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

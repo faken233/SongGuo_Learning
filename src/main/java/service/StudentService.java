@@ -15,5 +15,5 @@ public interface StudentService {
 
     int participateCourse(int studentID, int courseID);
 
-
+    List<Course> selectParticipatedCourses(int studentID) throws SQLException, ClassNotFoundException, InterruptedException;
 }

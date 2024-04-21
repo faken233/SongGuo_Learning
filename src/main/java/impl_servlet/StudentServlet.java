@@ -60,4 +60,11 @@ public class StudentServlet extends StudentBaseServlet {
         }
         resp.getWriter().write(rs);
     }
+
+    public void selectParticipatedCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+        int studentID = Integer.parseInt(req.getParameter("studentID"));
+        List<Course> courses = studentService.selectParticipatedCourses(studentID);
+        String rs = JSON.toJSONString(Result.success("OK", courses));
+        resp.getWriter().write(rs);
+    }
 }
