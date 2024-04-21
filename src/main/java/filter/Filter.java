@@ -14,15 +14,14 @@ import java.io.IOException;
 public class Filter implements javax.servlet.Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        ((HttpServletResponse)servletResponse).setHeader("Access-Control-Allow-Origin", "*");
-        ((HttpServletResponse)servletResponse).setHeader("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE");
-
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-
-
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setContentType("application/json");
+        request.setCharacterEncoding("UTF-8");
+
         String requestURI = request.getRequestURI();
 
         if (request.getMethod().equals("OPTIONS")) {
