@@ -21,8 +21,8 @@ public class Filter implements javax.servlet.Filter {
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
-
         String requestURI = request.getRequestURI();
+
 
         if (request.getMethod().equals("OPTIONS")) {
             response.setHeader("Access-Control-Allow-Origin", "*");
