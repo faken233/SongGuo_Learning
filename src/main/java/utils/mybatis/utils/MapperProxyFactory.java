@@ -27,6 +27,7 @@ public class MapperProxyFactory {
         typeHandlerMap.put(String.class, new StringTypeHandler());
         typeHandlerMap.put(Timestamp.class, new TimestampTypeHandler());
         typeHandlerMap.put(Boolean.class, new BooleanTypeHandler());
+        typeHandlerMap.put(Float.class, new FloatTypeHandler());
     }
 
     public static <T> T getMapper(Class<T> mapper) {

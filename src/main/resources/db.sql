@@ -109,7 +109,7 @@ create table studentanswers
     questionID     int        not null,
     answerDateTime datetime   null,
     answer         text       null,
-    isCorrect      tinyint(1) null,
+    correction      tinyint(1) null,
     primary key (studentID, questionID)
 );
 
