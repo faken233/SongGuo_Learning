@@ -2,6 +2,7 @@ package dao;
 
 import pojo.Chapter;
 import pojo.Course;
+import pojo.EnrolledCourseMap;
 import pojo.question.MultipleChoiceQuestion;
 import pojo.question.ShortAnswerQuestion;
 import pojo.question.TrueFalseQuestion;
@@ -77,4 +78,10 @@ public interface TeacherMapper {
 
     @SelectFaken("select * from multiplechoicequestions where chapterID = #{chapterID}")
     List<MultipleChoiceQuestion> selectMultipleChoiceQuestionsByChapterID(@ParamFaken("chapterID") Integer chapterID);
+
+    // 查询加入某课程的学生
+    @SelectFaken("select * from enrolledcourses where courseID = #{courseID} limit #{offset}, #{pageSize}")
+    List<EnrolledCourseMap> getEnrolledStudentsByCourseID(@ParamFaken("courseID")   Integer courseID,
+                                                          @ParamFaken("offset")     Integer offset,
+                                                          @ParamFaken("pageSize")   Integer pageSize);
 }

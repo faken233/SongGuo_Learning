@@ -2,6 +2,7 @@ package service;
 
 import pojo.Chapter;
 import pojo.Course;
+import pojo.Student;
 import pojo.Teacher;
 import pojo.question.Question;
 
@@ -20,4 +21,6 @@ public interface TeacherService {
     int addQuestionToChapter(Question question, int type);
 
     List<Question> selectQuestionsByChapterID(int chapterID);
+
+    List<Student> getEnrolledStudentsByCourseID(int courseID, int currentPage, int pageSize);
 }

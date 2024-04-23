@@ -3,10 +3,7 @@ package impl_servlet;
 import base_servlet.TeacherBaseServlet;
 import com.alibaba.fastjson.JSON;
 import constnum.ConstNum;
-import pojo.Chapter;
-import pojo.Course;
-import pojo.Result;
-import pojo.Teacher;
+import pojo.*;
 import pojo.question.MultipleChoiceQuestion;
 import pojo.question.Question;
 import pojo.question.ShortAnswerQuestion;
@@ -121,6 +118,15 @@ public class TeacherServlet extends TeacherBaseServlet {
         int chapterID = Integer.parseInt(req.getParameter("chapterID"));
         List<Question> questionList = teacherService.selectQuestionsByChapterID(chapterID);
         String rs = JSON.toJSONString(Result.success("SELECT_OK", questionList));
+        resp.getWriter().write(rs);
+    }
+
+    public void getEnrolledStudents (HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int courseID = Integer.parseInt(req.getParameter("courseID"));
+        int currentPage = Integer.parseInt(req.getParameter("currentPage"));
+        int pageSize = Integer.parseInt(req.getParameter("pageSize"));
+        List<Student> enrolledStudentsByCourseID = teacherService.getEnrolledStudentsByCourseID(courseID, currentPage, pageSize);
+        String rs = JSON.toJSONString(Result.success("SELECT_OK", enrolledStudentsByCourseID));
         resp.getWriter().write(rs);
     }
 }
