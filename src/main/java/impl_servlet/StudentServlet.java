@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 @WebServlet("/student/*")
 public class StudentServlet extends StudentBaseServlet {
@@ -70,7 +71,12 @@ public class StudentServlet extends StudentBaseServlet {
         int studentID = Integer.parseInt(req.getParameter("studentID"));
         int chapterID = Integer.parseInt(req.getParameter("chapterID"));
         ChapterLearningProgress chapterLearningProgresses = studentService.selectChapterLearningProgressByStudentIDAndChapterID(studentID, chapterID);
-        String rs = JSON.toJSONString(Result.success("OK", chapterLearningProgresses));
+        String rs;
+        if (Objects.isNull(chapterLearningProgresses)) {
+            rs = JSON.toJSONString(Result.success("FIRST_TIME", null));
+        }else {
+            rs = JSON.toJSONString(Result.success("ALREADY_DONE", chapterLearningProgresses));
+        }
         resp.getWriter().write(rs);
     }
 

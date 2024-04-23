@@ -84,7 +84,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ChapterLearningProgress checkChapterAnswers(List<StudentAnswer> studentAnswers, Integer chapterID) {
-        // 学生上传答案, 比对后记录正确与否, 统计数据后返回学习情况
+        // 学生上传答案, 比对后记录正确与否, 统计数据后返回学习情况, 同时将情况存入数据库
 
         // 初始化学习情况
         Integer studentID = studentAnswers.get(0).getStudentID();
@@ -134,12 +134,18 @@ public class StudentServiceImpl implements StudentService {
                     studentMapper.addStudentAnswerRecord(studentID, questionID, studentAnswerContent, studentAnswer.getCorrection(), type);
                     break;
                 default:
-                    continue;
             }
         }
         float accuracy = correctCount / totalCountExceptSAQuestion;
         chapterLearningProgress.setaccuracy(accuracy);
         chapterLearningProgress.setanswerCount((int) (totalSACount + totalCountExceptSAQuestion));
+
+        studentMapper.addStudentChapterLearningProgress(
+                chapterLearningProgress.getStudentID(),
+                chapterLearningProgress.getChapterID(),
+                chapterLearningProgress.getAnswerCount(),
+                chapterLearningProgress.getAccuracy());
+
         return chapterLearningProgress;
     }
 }
