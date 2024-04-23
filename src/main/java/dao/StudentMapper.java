@@ -50,9 +50,17 @@ public interface StudentMapper {
     // 录入一条学生答题记录
     @InsertFaken("insert into studentanswers (studentID, questionID, answerDateTime, answer, correction, type) " +
             "values (#{studentID}, #{questionID}, NOW(), #{answer}, #{correction}, #{type})")
-    void addStudentAnswerRecord(@ParamFaken("studentID") Integer studentID,
-                                @ParamFaken("questionID") Integer questionID,
-                                @ParamFaken("answer") String answer,
-                                @ParamFaken("correction") String correction,
-                                @ParamFaken("type") Integer type);
+    void addStudentAnswerRecord(@ParamFaken("studentID")    Integer studentID,
+                                @ParamFaken("questionID")   Integer questionID,
+                                @ParamFaken("answer")       String answer,
+                                @ParamFaken("correction")   String correction,
+                                @ParamFaken("type")         Integer type);
+
+    // 录入某个学生某一个章节的答题情况
+    @InsertFaken("insert into chapterlearningprogress (studentID, chapterID, answerCount, accuracy) " +
+            "values (#{studentID}, #{chapterID}, #{answerCount}, #{accuracy})")
+    void addStudentChapterLearningProgress(@ParamFaken("studentID")     Integer studentID,
+                                           @ParamFaken("chapterID")     Integer chapterID,
+                                           @ParamFaken("answerCount")   Integer answerCount,
+                                           @ParamFaken("accuracy")      Float accuracy);
 }
