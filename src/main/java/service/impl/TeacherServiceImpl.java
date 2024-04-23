@@ -3,9 +3,7 @@ package service.impl;
 import constnum.ConstNum;
 import dao.AccountMapper;
 import dao.TeacherMapper;
-import pojo.Chapter;
-import pojo.Course;
-import pojo.Teacher;
+import pojo.*;
 import pojo.question.MultipleChoiceQuestion;
 import pojo.question.Question;
 import pojo.question.ShortAnswerQuestion;
@@ -94,6 +92,22 @@ public class TeacherServiceImpl implements TeacherService {
         questionList.addAll(multipleChoiceQuestions);
         questionList.addAll(shortAnswerQuestions);
         return questionList;
+    }
+
+    @Override
+    public List<Student> getEnrolledStudentsByCourseID(int courseID, int currentPage, int pageSize) {
+        List<Student> studentList = new ArrayList<>();
+
+        int offset = (currentPage - 1) * pageSize;
+
+        List<EnrolledCourseMap> enrolledStudents = teacherMapper.getEnrolledStudentsByCourseID(courseID, offset, pageSize);
+
+        for (EnrolledCourseMap enrolledStudent : enrolledStudents) {
+            Student studentByID = accountMapper.getStudentByID(enrolledStudent.getStudentID());
+            studentList.add(studentByID);
+        }
+
+        return studentList;
     }
 
     private Integer generateQuestionID(int type) {

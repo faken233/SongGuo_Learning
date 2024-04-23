@@ -5,7 +5,9 @@ import java.sql.Timestamp;
 public class EnrolledCourseMap {
     private Integer courseID;
     private Integer studentID;
+    private Timestamp enrollDateTime;
 
+    public EnrolledCourseMap() {}
     public Integer getCourseID() {
         return courseID;
     }
@@ -36,8 +38,6 @@ public class EnrolledCourseMap {
         this.enrollDateTime = enrollDateTime;
     }
 
-    private Timestamp enrollDateTime;
 
-    public EnrolledCourseMap() {
-    }
+
 }

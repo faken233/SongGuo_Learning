@@ -45,7 +45,7 @@ public class Filter implements javax.servlet.Filter {
         // 判断是否携带Jwt令牌
         String token = request.getHeader("token");
         if (token == null) {
-            // 未登录, 重定向到登陆页
+            // 未登录
             System.out.println("token is null");
             String rs = JSON.toJSONString(Result.error("TOKEN_IS_NULL"));
             response.getWriter().write(rs);

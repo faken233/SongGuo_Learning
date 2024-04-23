@@ -1,18 +1,14 @@
 create table chapterlearningprogress
 (
-    studentID     int   not null,
-    courseID      int   not null,
-    chapterID     int   not null,
-    questionCount int   null,
-    accuracy      float null,
-    primary key (studentID, courseID, chapterID)
+    studentID   int   not null,
+    chapterID   int   not null,
+    answerCount int   null,
+    accuracy    float null,
+    primary key (studentID, chapterID)
 );
 
 create index fk_chapterID
     on chapterlearningprogress (chapterID);
-
-create index fk_courseID
-    on chapterlearningprogress (courseID);
 
 create index fk_studentID
     on chapterlearningprogress (studentID);
@@ -83,33 +79,41 @@ create index fk_courseID
 create index fk_studentID
     on enrolledcourses (studentID);
 
-create table questions
+create table multiplechoicequestions
 (
-    questionID int auto_increment
+    questionID int              not null
         primary key,
-    chapterID  int         null,
-    type       varchar(50) null,
-    content    text        null,
-    answer     text        null
+    options    text             null,
+    answer     varchar(10)      null,
+    type       tinyint unsigned not null,
+    chapterID  int              not null,
+    content    text             not null
 );
 
-create index fk_chapterID
-    on questions (chapterID);
+create index multiplechoicequestions_chapterID_index
+    on multiplechoicequestions (chapterID);
 
-create table salts
+create table shortanswerquestions
 (
-    userID int          not null
+    questionID int              not null
         primary key,
-    salt   varchar(255) null
+    chapterID  int              not null,
+    answer     text             not null,
+    content    text             not null,
+    type       tinyint unsigned not null
 );
+
+create index shortanswerquestions_chapterID_index
+    on shortanswerquestions (chapterID);
 
 create table studentanswers
 (
-    studentID      int        not null,
-    questionID     int        not null,
-    answerDateTime datetime   null,
-    answer         text       null,
-    correction      tinyint(1) null,
+    studentID      int              not null,
+    questionID     int              not null,
+    answerDateTime datetime         null,
+    answer         text             null,
+    correction     varchar(10)      null,
+    type           tinyint unsigned not null,
     primary key (studentID, questionID)
 );
 
@@ -125,8 +129,9 @@ create table students
         primary key,
     name              varchar(255) null,
     grade             varchar(20)  null,
-    class             varchar(20)  null,
-    encryptedPassword varchar(255) null
+    className         varchar(20)  null,
+    encryptedPassword varchar(255) null,
+    phoneNumber       varchar(20)  null
 );
 
 create table teachers
@@ -137,7 +142,21 @@ create table teachers
     phoneNumber       varchar(20)  null,
     email             varchar(255) null,
     qq                varchar(20)  null,
-    introduction      text         null,
+    description       text         null,
     encryptedPassword varchar(255) null
 );
+
+create table truefalsequestions
+(
+    questionID int auto_increment
+        primary key,
+    chapterID  int              not null,
+    type       tinyint unsigned not null,
+    content    text             not null,
+    answer     varchar(10)      not null
+);
+
+create index truefalsequestions_chapterID_index
+    on truefalsequestions (chapterID);
+
 
