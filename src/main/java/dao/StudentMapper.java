@@ -23,9 +23,17 @@ public interface StudentMapper {
     @SelectFaken("select * from courses where endDateTime > NOW()")
     List<Course> selectParticipatableCourses();
 
+    //根据ID查找课程
+    @SelectFaken("select * from courses where courseID = #{courseID}")
+    Course selectCourseByCourseID(@ParamFaken("courseID") Integer courseID);
+
     // 查找指定学生已经参与过的课程ID
     @SelectFaken("select * from enrolledcourses where studentID = #{studentID}")
     List<EnrolledCourseMap> selectAlreadyParticipatedCourses(@ParamFaken("studentID") Integer studentID);
+
+    // 查找某个课程已被多少学生参加
+    @SelectFaken("select * from enrolledcourses where courseID = #{courseID}")
+    List<EnrolledCourseMap> selectAlreadyParticipatedCoursesByCourseID(@ParamFaken("courseID") Integer courseID);
 
     // 参与新课程
     @InsertFaken("insert into enrolledcourses (studentID, courseID, enrollDateTime) values(#{studentID}, #{courseID}, NOW())")

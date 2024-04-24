@@ -3,6 +3,8 @@ package service.impl;
 import constnum.ConstNum;
 import dao.AccountMapper;
 import dao.TeacherMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pojo.*;
 import pojo.question.MultipleChoiceQuestion;
 import pojo.question.Question;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 public class TeacherServiceImpl implements TeacherService {
+    private static final Logger log = LoggerFactory.getLogger(TeacherServiceImpl.class);
     private final AccountMapper accountMapper = MapperProxyFactory.getMapper(AccountMapper.class);
     private final TeacherMapper teacherMapper = MapperProxyFactory.getMapper(TeacherMapper.class);
 
@@ -34,14 +37,65 @@ public class TeacherServiceImpl implements TeacherService {
         String description = teacher.getDescription();
         Integer id = teacher.getteacherID();
 
+        log.info("教师ID为{}的用户修改了个人信息", id);
+
         teacherMapper.updateTeacher(name, email, qq, description, id);
     }
 
     @Override
     public void addNewCourse(int teacherID, String courseName, String description, Timestamp startDateTime, Timestamp endDateTime, int maxStudents) {
         int courseID = generateCourseID();
+        log.info("教师ID为{}的用户上线了新课程.课程ID为{}", teacherID, courseID);
         teacherMapper.addNewCourse(courseID, teacherID, courseName, description, startDateTime, endDateTime, maxStudents);
     }
+
+    @Override
+    public void deleteCourse(int courseID) {
+        // 先删除题目
+        List<Chapter> chapters = teacherMapper.selectChaptersByCourseID(courseID);
+        List<Integer> chapterIDs = new ArrayList<>();
+
+        // 获得一个课程下章节ID的列表
+        for (Chapter chapter : chapters) {
+            chapterIDs.add(chapter.getChapterID());
+        }
+
+        // 遍历列表, 删除题目
+        for (Integer chapterID : chapterIDs) {
+            teacherMapper.deleteMultipleChoiceQuestionsByChapterID(chapterID);
+            teacherMapper.deleteShortAnswerQuestionsByChapterID(chapterID);
+            teacherMapper.deleteTrueFalseQuestionsByChapterID(chapterID);
+        }
+
+        // 再删除章节
+        teacherMapper.deleteChaptersByCourseID(courseID);
+
+        // 最后删除课程信息
+        teacherMapper.deleteCourse(courseID);
+
+        log.info("ID为{}的课程被下线", courseID);
+    }
+
+    @Override
+    public void deleteChapter(int chapterID) {
+        teacherMapper.deleteMultipleChoiceQuestionsByChapterID(chapterID);
+        teacherMapper.deleteShortAnswerQuestionsByChapterID(chapterID);
+        teacherMapper.deleteTrueFalseQuestionsByChapterID(chapterID);
+        teacherMapper.deleteChapterByChapterID(chapterID);
+
+        log.info("ID为{}的章节被删除", chapterID);
+    }
+
+    public void deleteQuestion(int questionID) {
+        if (String.valueOf(questionID).charAt(0) == '5') {
+            teacherMapper.deleteTrueFalseQuestionsByQuestionID(questionID);
+        } else if (String.valueOf(questionID).charAt(0) == '6') {
+            teacherMapper.deleteMultipleChoiceQuestionsByQuestionID(questionID);
+        } else teacherMapper.deleteShortAnswerQuestionsByQuestionID(questionID);
+
+        log.info("ID为{}的题目被删除", questionID);
+    }
+
 
     @Override
     public List<Course> selectCourses(int teacherID) {
@@ -61,6 +115,8 @@ public class TeacherServiceImpl implements TeacherService {
         String chapterName = chapter.getChapterName();
         String content = chapter.getContent();
 
+        log.info("ID为{}的课程新增了一个章节,章节ID为{}", courseID, chapterID);
+
         teacherMapper.addNewChapter(chapterID, courseID, chapterName, content);
     }
 
@@ -72,14 +128,17 @@ public class TeacherServiceImpl implements TeacherService {
         String content = question.getContent();
 
         if (type == ConstNum.TrueFalseQuestion) {
+            log.info("ID为{}的章节新增一个判断题, 题目ID为{}", chapterID, questionID);
             String answer = ((TrueFalseQuestion) question).getAnswer();
             teacherMapper.addTrueFalseQuestion(questionID, chapterID, type, content, answer);
         }
         else if (type == ConstNum.ShortAnswerQuestion) {
+            log.info("ID为{}的章节新增一个简答题, 题目ID为{}", chapterID, questionID);
             String answer = ((ShortAnswerQuestion) question).getAnswer();
             teacherMapper.addShortAnswerQuestion(questionID, chapterID, type, content, answer);
         }
         else if (type == ConstNum.MultipleChoiceQuestion) {
+            log.info("ID为{}的章节新增一个选择题, 题目ID为{}", chapterID, questionID);
             String answer = ((MultipleChoiceQuestion) question).getAnswer();
             String options = ((MultipleChoiceQuestion) question).getOptions();
             teacherMapper.addMultipleChoiceQuestion(questionID, chapterID, type, content, answer, options);

@@ -35,10 +35,7 @@ public class Filter implements javax.servlet.Filter {
 
         if (requestURI.contains("/account/")) {
             // 登陆注册请求直接放行
-            System.out.println("requestURI: " + requestURI);
-            System.out.println("before doFilter");
             filterChain.doFilter(servletRequest, servletResponse);
-            System.out.println("after doFilter");
             return;
         }
 
@@ -46,11 +43,8 @@ public class Filter implements javax.servlet.Filter {
         String token = request.getHeader("token");
         if (token == null) {
             // 未登录
-            System.out.println("token is null");
-            String rs = JSON.toJSONString(Result.error("TOKEN_IS_NULL"));
-            response.getWriter().write(rs);
+            response.getWriter().write(JSON.toJSONString(Result.error("TOKEN_IS_NULL")));
         } else {
-            System.out.println("login, token: " + token);
             // 校验Jwt, 逻辑忽略, 默认有Jwt就是登陆了
             filterChain.doFilter(servletRequest, servletResponse);
         }

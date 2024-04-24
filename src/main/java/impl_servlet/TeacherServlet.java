@@ -73,6 +73,40 @@ public class TeacherServlet extends TeacherBaseServlet {
         }
     }
 
+    public void deleteCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int courseID = Integer.parseInt(req.getParameter("courseID"));
+        try {
+            teacherService.deleteCourse(courseID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("DELETE_OK")));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("DELETE_ERROR")));
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteChapter(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int chapterID = Integer.parseInt(req.getParameter("chapterID"));
+        try {
+            teacherService.deleteChapter(chapterID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("DELETE_OK")));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("DELETE_ERROR")));
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteQuestion(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int questionID = Integer.parseInt(req.getParameter("questionID"));
+        try {
+            teacherService.deleteQuestion(questionID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("DELETE_OK")));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("DELETE_ERROR")));
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void selectCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int teacherID = Integer.parseInt(req.getParameter("id"));
         try {

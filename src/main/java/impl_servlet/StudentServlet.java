@@ -56,8 +56,12 @@ public class StudentServlet extends StudentBaseServlet {
         int courseID = Integer.parseInt(req.getParameter("courseID"));
 
         try {
-            studentService.participateCourse(studentID, courseID);
-            resp.getWriter().write(JSON.toJSONString(Result.success("ENROLL_OK")));
+            int i = studentService.participateCourse(studentID, courseID);
+            if (i == 1) {
+                resp.getWriter().write(JSON.toJSONString(Result.success("ENROLL_OK")));
+            } else if (i == 0) {
+                resp.getWriter().write(JSON.toJSONString(Result.error("MAX_STUDENT")));
+            }
         } catch (IOException e) {
             resp.getWriter().write(JSON.toJSONString(Result.error("ENROLL_ERROR")));
             throw new RuntimeException(e);
