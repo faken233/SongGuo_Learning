@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @WebServlet("/teacher/*")
 public class TeacherServlet extends TeacherBaseServlet {
 
@@ -26,29 +27,33 @@ public class TeacherServlet extends TeacherBaseServlet {
     public void getInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int id = Integer.parseInt(req.getParameter("id"));
 
-        Teacher teacher = teacherService.getInfo(id);
-
-        String rs = JSON.toJSONString(Result.success("OK", teacher));
-        resp.getWriter().write(rs);
+        try {
+            Teacher teacher = teacherService.getInfo(id);
+            resp.getWriter().write(JSON.toJSONString(Result.success("OK", teacher)));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 
     public void updateInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String s = req.getReader().readLine();
         Teacher teacher = JSON.parseObject(s, Teacher.class);
-        int i = teacherService.updateInfo(teacher);
-        String rs;
-        if (i > 0) {
-            rs = JSON.toJSONString(Result.success("UPDATE_OK"));
-        } else {
-            rs = JSON.toJSONString(Result.success("UPDATE_ERROR"));
+        try {
+            teacherService.updateInfo(teacher);
+            resp.getWriter().write(JSON.toJSONString(Result.success("UPDATE_OK")));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("UPDATE_ERROR")));
+            throw new RuntimeException(e);
         }
-        resp.getWriter().write(rs);
+
     }
 
     public void addCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String s = req.getReader().readLine();
         Course course = JSON.parseObject(s, Course.class);
 
+        // 解析, 取出属性值
         String courseName = course.getCourseName();
         String description = course.getDescription();
         int teacherID = course.getTeacherID();
@@ -56,41 +61,47 @@ public class TeacherServlet extends TeacherBaseServlet {
         Timestamp endDateTime = course.getEndDateTime();
         int maxStudents = course.getMaxStudents();
 
-        int i = teacherService.addNewCourse(teacherID, courseName, description, startDateTime, endDateTime, maxStudents);
-        if (i > 0) {
-            String rs = JSON.toJSONString(Result.success("ADD_OK"));
-            resp.getWriter().write(rs);
-        } else {
-            String rs = JSON.toJSONString(Result.success("ADD_ERROR"));
-            resp.getWriter().write(rs);
+        try {
+            teacherService.addNewCourse(teacherID, courseName, description, startDateTime, endDateTime, maxStudents);
+            resp.getWriter().write(JSON.toJSONString(Result.success("ADD_OK")));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("ADD_ERROR")));
+            throw new RuntimeException(e);
         }
     }
 
     public void selectCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int teacherID = Integer.parseInt(req.getParameter("id"));
-        List<Course> courses = teacherService.selectCourses(teacherID);
-        String rs = JSON.toJSONString(Result.success("SELECT_OK", courses));
-        resp.getWriter().write(rs);
+        try {
+            List<Course> courses = teacherService.selectCourses(teacherID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", courses)));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 
     public void selectCourseChaptersByCourseID(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int courseID = Integer.parseInt(req.getParameter("courseID"));
-        List<Chapter> chapters = teacherService.selectChaptersByCourseID(courseID);
-        String rs = JSON.toJSONString(Result.success("SELECT_OK", chapters));
-        resp.getWriter().write(rs);
+        try {
+            List<Chapter> chapters = teacherService.selectChaptersByCourseID(courseID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", chapters)));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 
     public void addNewChapterToCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String s = req.getReader().readLine();
         Chapter chapter = JSON.parseObject(s, Chapter.class);
-        int i = teacherService.addNewChapter(chapter);
-        String rs;
-        if (i > 0) {
-            rs = JSON.toJSONString(Result.success("ADD_OK"));
-        } else {
-            rs = JSON.toJSONString(Result.success("ADD_ERROR"));
+        try {
+            teacherService.addNewChapter(chapter);
+            resp.getWriter().write(JSON.toJSONString(Result.success("ADD_OK")));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("ADD_ERROR")));
+            throw new RuntimeException(e);
         }
-        resp.getWriter().write(rs);
     }
 
     public void addQuestionToChapter(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -105,28 +116,36 @@ public class TeacherServlet extends TeacherBaseServlet {
             question = JSON.parseObject(s, MultipleChoiceQuestion.class);
         }
 
-        int i = teacherService.addQuestionToChapter(question, type);
-
-        if (i > 0) {
+        try {
+            teacherService.addQuestionToChapter(question, type);
             resp.getWriter().write(JSON.toJSONString(Result.success("ADD_OK", question)));
-        } else {
-            String rs = JSON.toJSONString(Result.success("ADD_ERROR"));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("ADD_ERROR")));
+            throw new RuntimeException(e);
         }
     }
 
     public void getChapterQuestions (HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int chapterID = Integer.parseInt(req.getParameter("chapterID"));
-        List<Question> questionList = teacherService.selectQuestionsByChapterID(chapterID);
-        String rs = JSON.toJSONString(Result.success("SELECT_OK", questionList));
-        resp.getWriter().write(rs);
+        try {
+            List<Question> questionList = teacherService.selectQuestionsByChapterID(chapterID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", questionList)));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 
     public void getEnrolledStudents (HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int courseID = Integer.parseInt(req.getParameter("courseID"));
         int currentPage = Integer.parseInt(req.getParameter("currentPage"));
         int pageSize = Integer.parseInt(req.getParameter("pageSize"));
-        List<Student> enrolledStudentsByCourseID = teacherService.getEnrolledStudentsByCourseID(courseID, currentPage, pageSize);
-        String rs = JSON.toJSONString(Result.success("SELECT_OK", enrolledStudentsByCourseID));
-        resp.getWriter().write(rs);
+        try {
+            List<Student> enrolledStudentsByCourseID = teacherService.getEnrolledStudentsByCourseID(courseID, currentPage, pageSize);
+            resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", enrolledStudentsByCourseID)));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 }

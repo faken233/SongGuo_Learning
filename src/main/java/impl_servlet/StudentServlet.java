@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @WebServlet("/student/*")
 public class StudentServlet extends StudentBaseServlet {
     private final StudentService studentService = new StudentServiceImpl();
@@ -21,71 +22,91 @@ public class StudentServlet extends StudentBaseServlet {
     public void getInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int id = Integer.parseInt(req.getParameter("id"));
 
-        Student student = studentService.getInfo(id);
+        Student student;
+        try {
+            student = studentService.getInfo(id);
+            resp.getWriter().write(JSON.toJSONString(Result.success("STUDENT_INFO_GET_OK", student)));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("STUDENT_INFO_GET_ERROR")));
+            throw new RuntimeException(e);
+        }
 
-        String rs = JSON.toJSONString(Result.success("OK", student));
-        resp.getWriter().write(rs);
+
     }
 
     public void updateInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String s = req.getReader().readLine();
         Student student = JSON.parseObject(s, Student.class);
-        int i = studentService.updateInfo(student);
-        String rs;
-        if (i > 0) {
-            rs = JSON.toJSONString(Result.success("UPDATE_OK"));
-        } else {
-            rs = JSON.toJSONString(Result.success("UPDATE_ERROR"));
+        try {
+            studentService.updateInfo(student);
+            resp.getWriter().write( JSON.toJSONString(Result.success("UPDATE_STUDENT_INFO_OK")));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("UPDATE_STUDENT_INFO_ERROR")));
+            throw new RuntimeException(e);
         }
-        resp.getWriter().write(rs);
     }
 
     public void selectParticipatableCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
         int studentID = Integer.parseInt(req.getParameter("studentID"));
         List<Course> courses = studentService.selectParticipatableCourses(studentID);
-        String rs = JSON.toJSONString(Result.success("OK", courses));
+        String rs = JSON.toJSONString(Result.success("SELECT_OK", courses));
         resp.getWriter().write(rs);
     }
 
     public void participateCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int studentID = Integer.parseInt(req.getParameter("studentID"));
         int courseID = Integer.parseInt(req.getParameter("courseID"));
-        int i = studentService.participateCourse(studentID, courseID);
-        String rs;
-        if (i > 0) {
-            rs = JSON.toJSONString(Result.success("ENROLL_OK"));
-        } else {
-            rs = JSON.toJSONString(Result.success("ENROLL_ERROR"));
+
+        try {
+            studentService.participateCourse(studentID, courseID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("ENROLL_OK")));
+        } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("ENROLL_ERROR")));
+            throw new RuntimeException(e);
         }
-        resp.getWriter().write(rs);
     }
 
-    public void selectParticipatedCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+    public void selectParticipatedCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int studentID = Integer.parseInt(req.getParameter("studentID"));
-        List<Course> courses = studentService.selectParticipatedCourses(studentID);
-        String rs = JSON.toJSONString(Result.success("OK", courses));
-        resp.getWriter().write(rs);
+        try {
+            List<Course> courses = studentService.selectParticipatedCourses(studentID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", courses)));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 
-    public void getChapterLearningProgress(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+    public void getChapterLearningProgress(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int studentID = Integer.parseInt(req.getParameter("studentID"));
         int chapterID = Integer.parseInt(req.getParameter("chapterID"));
-        ChapterLearningProgress chapterLearningProgresses = studentService.selectChapterLearningProgressByStudentIDAndChapterID(studentID, chapterID);
-        String rs;
-        if (Objects.isNull(chapterLearningProgresses)) {
-            rs = JSON.toJSONString(Result.success("FIRST_TIME", null));
-        }else {
-            rs = JSON.toJSONString(Result.success("ALREADY_DONE", chapterLearningProgresses));
+
+        try {
+            ChapterLearningProgress chapterLearningProgresses = studentService.selectChapterLearningProgressByStudentIDAndChapterID(studentID, chapterID);
+            String rs;
+            if (Objects.isNull(chapterLearningProgresses)) {
+                rs = JSON.toJSONString(Result.success("FIRST_TIME", null));
+            }else {
+                rs = JSON.toJSONString(Result.success("ALREADY_DONE", chapterLearningProgresses));
+            }
+            resp.getWriter().write(rs);
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
         }
-        resp.getWriter().write(rs);
+
     }
 
-    public void checkChapterAnswers(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
+    public void checkChapterAnswers(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int chapterID = Integer.parseInt(req.getParameter("chapterID"));
         String s = req.getReader().readLine();
         List<StudentAnswer> studentAnswers = JSON.parseArray(s, StudentAnswer.class);
-        ChapterLearningProgress chapterLearningProgress = studentService.checkChapterAnswers(studentAnswers, chapterID);
-        String rs = JSON.toJSONString(Result.success("OK", chapterLearningProgress));
-        resp.getWriter().write(rs);
+        try {
+            ChapterLearningProgress chapterLearningProgress = studentService.checkChapterAnswers(studentAnswers, chapterID);
+            resp.getWriter().write(JSON.toJSONString(Result.success("OK", chapterLearningProgress)));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
     }
 }
