@@ -25,7 +25,7 @@ public class ConnectionPool implements MyConnectionPool {
         for (int i = 0; i < Integer.parseInt(DataSourceConfig.getInitSize()); i++) {
             connectionsFree.add(createConnection());
         }
-        System.out.println("Pool initialized, created " + connectionsFree.size() + " connections");
+//        System.out.println("Pool initialized, created " + connectionsFree.size() + " connections");
         //开启健康检查,检测是否有连接超时的操作
         if (Boolean.parseBoolean(DataSourceConfig.getHealth())) {
             checkConnectionTimeout();
@@ -56,12 +56,12 @@ public class ConnectionPool implements MyConnectionPool {
                     //直接关闭,移除,总数自减
                     connectionsUsed.remove(connectionEntity);
                     connectionCount--;
-                    System.out.println(Thread.currentThread().getName()
-                            + "connected for too long:"
-                            + connection
-                            + ", abandon this connection, empty connection:"
-                            + connectionsFree.size()
-                            + ",now using connections:" + connectionsUsed.size());
+//                    System.out.println(Thread.currentThread().getName()
+//                            + "connected for too long:"
+//                            + connection
+//                            + ", abandon this connection, empty connection:"
+//                            + connectionsFree.size()
+//                            + ",now using connections:" + connectionsUsed.size());
                     try {
                         connection.close();
                     } catch (SQLException e) {
@@ -97,7 +97,7 @@ public class ConnectionPool implements MyConnectionPool {
             ConnectionEntity connectionEntity = new ConnectionEntity(connection, System.currentTimeMillis());
             //加入正在使用的连接池
             connectionsUsed.add(connectionEntity);
-            System.out.println("get one connection:" + connection + ",now empty connection:" + connectionsFree.size());
+//            System.out.println("get one connection:" + connection + ",now empty connection:" + connectionsFree.size());
             return connection;
         } else {
             //没有空闲的
@@ -109,13 +109,13 @@ public class ConnectionPool implements MyConnectionPool {
                         System.currentTimeMillis());
                 //创建完,直接放进正在使用的连接池
                 connectionsUsed.add(connectionEntity);
-                System.out.println("no empty connection, now create new connection:"
-                        + connection + ",total connections:"
-                        + connectionCount);
+//                System.out.println("no empty connection, now create new connection:"
+//                        + connection + ",total connections:"
+//                        + connectionCount);
                 return connection;
             } else {
                 //总链接数大于最大数
-                System.out.println("no empty connection! waiting for new connection...");
+//                System.out.println("no empty connection! waiting for new connection...");
                 this.wait(Integer.parseInt(DataSourceConfig.getWaitTime()));
                 //递归,再次尝试
                 connection = getConnection();
@@ -137,8 +137,8 @@ public class ConnectionPool implements MyConnectionPool {
         notifyAll();
         //放入空闲连接池
         connectionsFree.add(connection);
-        System.out.println("one connection finished, now released connections:"
-                + connectionsFree.size() + ", using connections:" + connectionsUsed.size()
-                );
+//        System.out.println("one connection finished, now released connections:"
+//                + connectionsFree.size() + ", using connections:" + connectionsUsed.size()
+//                );
     }
 }

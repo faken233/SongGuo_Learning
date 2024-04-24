@@ -3,16 +3,20 @@ package service.impl;
 import com.alibaba.fastjson.JSONObject;
 import constnum.ConstNum;
 import dao.AccountMapper;
+import org.slf4j.LoggerFactory;
 import pojo.Student;
 import pojo.Teacher;
 import service.AccountService;
 import utils.mybatis.utils.MapperProxyFactory;
 
 import java.util.Random;
+
 public class AccountServiceImpl implements AccountService {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AccountServiceImpl.class);
     // 引入mapper
     private final AccountMapper accountMapper = MapperProxyFactory.getMapper(AccountMapper.class);
+
 
     @Override
     public Teacher validateIsNewTeacherAccount(String phoneNumber) {
@@ -38,11 +42,11 @@ public class AccountServiceImpl implements AccountService {
 
                 // 通过认证, 处理数据, 解析JSONObject
                 int id = Integer.parseInt(generateID(true));
-                accountMapper.insertNewTeacher(id,
-                        newUser.getString("name"),
-                        newUser.getString("phoneNumber"),
-                        newUser.getString("password")
-                );
+                String name = newUser.getString("name");
+                String phoneNumber = newUser.getString("phoneNumber");
+                String password = newUser.getString("password");
+                log.info("新教师用户注册, ID为{}, 电话号码为:{}",id, phoneNumber);
+                accountMapper.insertNewTeacher(id, name, phoneNumber, password);
                 return id;
             } else {
                 // 返回-1说明用户没有输入正确的教师凭证
@@ -51,12 +55,11 @@ public class AccountServiceImpl implements AccountService {
         }else if (accountType == 2) {
             //2为学生
             int id = Integer.parseInt(generateID(false));
-            // 解析JSONObject
-            accountMapper.insertNewStudent(id,
-                    newUser.getString("name"),
-                    newUser.getString("phoneNumber"),
-                    newUser.getString("password")
-            );
+            String name = newUser.getString("name");
+            String phoneNumber = newUser.getString("phoneNumber");
+            String password = newUser.getString("password");
+            log.info("新学生用户注册, ID为{}, 电话号码为:{}",id, phoneNumber);
+            accountMapper.insertNewStudent(id, name, phoneNumber, password);
             return id;
         }
         return 0;

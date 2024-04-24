@@ -7,12 +7,14 @@ import pojo.Result;
 import service.DiscussionService;
 import service.impl.DiscussionServiceImpl;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
 @SuppressWarnings("unused")
+@WebServlet("/discussion")
 public class DiscussionServletImpl extends DiscussionBassServlet {
     private final DiscussionService discussionService = new DiscussionServiceImpl();
 

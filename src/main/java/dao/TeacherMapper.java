@@ -6,14 +6,12 @@ import pojo.EnrolledCourseMap;
 import pojo.question.MultipleChoiceQuestion;
 import pojo.question.ShortAnswerQuestion;
 import pojo.question.TrueFalseQuestion;
-import utils.mybatis.anno.InsertFaken;
-import utils.mybatis.anno.ParamFaken;
-import utils.mybatis.anno.SelectFaken;
-import utils.mybatis.anno.UpdateFaken;
+import utils.mybatis.anno.*;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+@SuppressWarnings("ALL")
 public interface TeacherMapper {
 
     // 更新教师数据
@@ -34,6 +32,46 @@ public interface TeacherMapper {
                         @ParamFaken("startDateTime")    Timestamp startDateTime,
                         @ParamFaken("endDateTime")      Timestamp endDateTime,
                         @ParamFaken("maxStudents")      Integer maxStudents);
+
+    // 删除课程
+    @DeleteFaken("delete from courses where courseID = #{courseID}")
+    void deleteCourse(@ParamFaken("courseID") Integer courseID);
+
+    // 删除学生参加课程的信息
+    @DeleteFaken("delete from enrolledcourses where courseID = #{courseID}")
+    void deleteEnrolledCourse(@ParamFaken("courseID") Integer courseID);
+
+    // 删除课程下的章节
+    @DeleteFaken("delete from chapters where courseID = #{courseID}")
+    void deleteChaptersByCourseID(@ParamFaken("courseID") Integer courseID);
+
+    // 根据章节ID删除章节
+    @DeleteFaken("delete from chapters where chapterID = #{chapterID}")
+    void deleteChapterByChapterID(@ParamFaken("chapterID") Integer chapterID);
+
+    // 根据章节删除判断题
+    @DeleteFaken("delete from truefalsequestions where chapterID = #{chapterID}")
+    void deleteTrueFalseQuestionsByChapterID(@ParamFaken("chapterID") Integer chapterID);
+
+    // 根据章节删除简答题
+    @DeleteFaken("delete from shortanswerquestions where chapterID = #{chapterID}")
+    void deleteShortAnswerQuestionsByChapterID(@ParamFaken("courseID") Integer chapterID);
+
+    // 根据章节删除选择题
+    @DeleteFaken("delete from multiplechoicequestions where chapterID = #{chapterID}")
+    void deleteMultipleChoiceQuestionsByChapterID(@ParamFaken("courseID") Integer chapterID);
+
+    // 删除一道判断题
+    @DeleteFaken("delete from truefalsequestions where questionID = #{questionID}")
+    void deleteTrueFalseQuestionsByQuestionID(@ParamFaken("questionID") Integer questionID);
+
+    // 删除一道选择题
+    @DeleteFaken("delete from multiplechoicequestions where questionID = #{questionID}")
+    void deleteMultipleChoiceQuestionsByQuestionID(@ParamFaken("questionID") Integer questionID);
+
+    // 删除一道简答题
+    @DeleteFaken("delete from shortanswerquestions where questionID = #{questionID}")
+    void deleteShortAnswerQuestionsByQuestionID(@ParamFaken("questionID") Integer questionID);
 
     // 根据教师ID查找其名下的课程
     @SelectFaken("select * from courses where teacherID = #{teacherID}")

@@ -20,6 +20,15 @@ public interface TeacherService {
     // 添加课程
     void addNewCourse(int teacherID, String courseName, String description, Timestamp startDateTime, Timestamp endDateTime, int maxStudents);
 
+    // 删除课程
+    void deleteCourse(int courseID);
+
+    // 删除章节
+    void deleteChapter(int chapterID);
+
+    // 删除题目
+    void deleteQuestion(int questionID);
+
     // 查询教师名下的课程
     List<Course> selectCourses(int teacherID);
 

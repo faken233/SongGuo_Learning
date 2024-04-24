@@ -19,7 +19,7 @@ public interface StudentService {
     List<Course> selectParticipatableCourses(int studentID) throws SQLException, ClassNotFoundException, InterruptedException;
 
     // 参与课程
-    void participateCourse(int studentID, int courseID);
+    int participateCourse(int studentID, int courseID);
 
     // 查询已经参加的课程
     List<Course> selectParticipatedCourses(int studentID) throws SQLException, ClassNotFoundException, InterruptedException;

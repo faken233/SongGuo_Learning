@@ -2,6 +2,8 @@ package service.impl;
 
 import dao.AccountMapper;
 import dao.StudentMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pojo.*;
 import pojo.question.MultipleChoiceQuestion;
 import pojo.question.TrueFalseQuestion;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class StudentServiceImpl implements StudentService {
 
+    private static final Logger log = LoggerFactory.getLogger(StudentServiceImpl.class);
     private final AccountMapper accountMapper = MapperProxyFactory.getMapper(AccountMapper.class);
     private final StudentMapper studentMapper = MapperProxyFactory.getMapper(StudentMapper.class);
 
@@ -32,6 +35,8 @@ public class StudentServiceImpl implements StudentService {
         String grade = student.getGrade();
         String className = student.getClassName();
         Integer studentID = student.getStudentID();
+
+        log.info("学生ID为{}的用户修改了个人信息", studentID);
 
         try {
             studentMapper.updateStudent(studentName, grade, className, studentID);
@@ -67,8 +72,18 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void participateCourse(int studentID, int courseID) {
-        studentMapper.participateCourse(studentID, courseID);
+    public int participateCourse(int studentID, int courseID) {
+        List<EnrolledCourseMap> enrolledCourseMaps = studentMapper.selectAlreadyParticipatedCoursesByCourseID(courseID);
+        Course course = studentMapper.selectCourseByCourseID(courseID);
+        int maxStudents = course.getMaxStudents();
+        int enrolledCount = enrolledCourseMaps.size();
+        if (enrolledCount > maxStudents) {
+            return 0;
+        } else {
+            log.info("学生ID为{}的学生选择参加课程ID为{}的课程", studentID, courseID);
+            studentMapper.participateCourse(studentID, courseID);
+            return 1;
+        }
     }
 
     @Override
