@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ParameterMappingTokenHandler implements TokenHandler {
 
-    private List<ParameterMapping> parameterMappings = new ArrayList<>();
+    private final List<ParameterMapping> parameterMappings = new ArrayList<>();
 
     @Override
     public String handleToken(String content) {

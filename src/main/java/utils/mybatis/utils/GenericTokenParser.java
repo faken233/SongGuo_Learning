@@ -69,8 +69,7 @@ public class GenericTokenParser {
           } else {
             //将标记符号和结束符号内的内容提取赋值给expression, 准备交给handler处理
             expression.append(src, offset, end - offset);
-            offset = end + closeToken.length();
-            break;
+              break;
           }
         }
         if (end == -1) {
