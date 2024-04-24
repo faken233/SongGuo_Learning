@@ -16,45 +16,57 @@ public class StudentServiceImpl implements StudentService {
     private final StudentMapper studentMapper = MapperProxyFactory.getMapper(StudentMapper.class);
     @Override
     public Student getInfo(int id) {
-        return accountMapper.getStudentByID(id);
+        try {
+            return accountMapper.getStudentByID(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public int updateInfo(Student student) {
+    public void updateInfo(Student student) {
 
         String studentName = student.getName();
         String grade = student.getGrade();
         String className = student.getClassName();
         Integer studentID = student.getStudentID();
 
-        return studentMapper.updateStudent(studentName, grade, className, studentID);
+        try {
+            studentMapper.updateStudent(studentName, grade, className, studentID);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<Course> selectParticipatableCourses(int studentID) {
         // 所有在时间内的课程
-        List<Course> courses = studentMapper.selectParticipatableCourses();
+        try {
+            List<Course> courses = studentMapper.selectParticipatableCourses();
 
-        // 学生已经参与过的课程
-        List<EnrolledCourseMap> enrolledCourseMaps = studentMapper.selectAlreadyParticipatedCourses(studentID);
+            // 学生已经参与过的课程
+            List<EnrolledCourseMap> enrolledCourseMaps = studentMapper.selectAlreadyParticipatedCourses(studentID);
 
-        // courses里面剔除掉enrolledCourseMaps含有的课程
-        // 1.拿到所有参与过的课程ID
-        List<Integer> enrolledCourseIDs = new ArrayList<>();
-        for (EnrolledCourseMap enrolledCourseMap : enrolledCourseMaps) {
-            enrolledCourseIDs.add(enrolledCourseMap.getCourseID());
+            // courses里面剔除掉enrolledCourseMaps含有的课程
+            // 1.拿到所有参与过的课程ID
+            List<Integer> enrolledCourseIDs = new ArrayList<>();
+            for (EnrolledCourseMap enrolledCourseMap : enrolledCourseMaps) {
+                enrolledCourseIDs.add(enrolledCourseMap.getCourseID());
+            }
+
+            // 2.遍历courses, 剔除ID包括在enrolledCourseIDs里面的课程
+            courses.removeIf(course -> enrolledCourseIDs.contains(course.getCourseID()));
+
+            // 得到所有可参与的课程courses
+            return courses;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        // 2.遍历courses, 剔除ID包括在enrolledCourseIDs里面的课程
-        courses.removeIf(course -> enrolledCourseIDs.contains(course.getCourseID()));
-
-        // 得到所有可参与的课程courses
-        return courses;
     }
 
     @Override
-    public int participateCourse(int studentID, int courseID) {
-        return studentMapper.participateCourse(studentID, courseID);
+    public void participateCourse(int studentID, int courseID) {
+        studentMapper.participateCourse(studentID, courseID);
     }
 
     @Override
@@ -100,7 +112,7 @@ public class StudentServiceImpl implements StudentService {
             Integer questionID = studentAnswer.getQuestionID();
             String studentAnswerContent = studentAnswer.getAnswer();
             int type = studentAnswer.getType();
-            String refAnswer = "";
+            String refAnswer;
             switch (type) {
                 case 5:
                     // 取出题库的题
@@ -136,6 +148,7 @@ public class StudentServiceImpl implements StudentService {
                 default:
             }
         }
+        // 正确率不涉及简答题
         float accuracy = correctCount / totalCountExceptSAQuestion;
         chapterLearningProgress.setaccuracy(accuracy);
         chapterLearningProgress.setanswerCount((int) (totalSACount + totalCountExceptSAQuestion));

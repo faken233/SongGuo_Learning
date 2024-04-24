@@ -15,8 +15,9 @@ import java.util.List;
 
 public interface StudentMapper {
 
+    // 修改学生信息
     @UpdateFaken("update students set name = #{name}, grade = #{grade}, className = #{className} where studentID = #{studentID}")
-    int updateStudent(@ParamFaken("name") String name, @ParamFaken("grade") String grade, @ParamFaken("className") String className, @ParamFaken("studentID") Integer id);
+    void updateStudent(@ParamFaken("name") String name, @ParamFaken("grade") String grade, @ParamFaken("className") String className, @ParamFaken("studentID") Integer id);
 
     // 查找在开课时间内的可参与的课程
     @SelectFaken("select * from courses where endDateTime > NOW()")
@@ -28,7 +29,7 @@ public interface StudentMapper {
 
     // 参与新课程
     @InsertFaken("insert into enrolledcourses (studentID, courseID, enrollDateTime) values(#{studentID}, #{courseID}, NOW())")
-    int participateCourse(@ParamFaken("studentID") Integer studentID, @ParamFaken("courseID") Integer courseID);
+    void participateCourse(@ParamFaken("studentID") Integer studentID, @ParamFaken("courseID") Integer courseID);
 
     // 查找某个学生某个章节的学习情况
     @SelectFaken("select * from chapterlearningprogress where studentID = #{studentID} and chapterID = #{chapterID}")
@@ -43,7 +44,7 @@ public interface StudentMapper {
     @SelectFaken("select * from multiplechoicequestions where questionID = #{questionID}")
     MultipleChoiceQuestion selectMultipleChoiceQuestionByQuestionID(@ParamFaken("questionID") Integer questionID);
 
-    // 比对答案(简答题), 查询题目
+    // 比对答案(简答题), 查询题目 (简答题没有答案对错之分, 仅仅提供一个查询的方法)
     @SelectFaken("select * from shortanswerquestions where questionID = #{questionID}")
     ShortAnswerQuestion selectShortAnswerQuestionByQuestionID(@ParamFaken("questionID") Integer questionID);
 
