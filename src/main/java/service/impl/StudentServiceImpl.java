@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentServiceImpl implements StudentService {
+
     private final AccountMapper accountMapper = MapperProxyFactory.getMapper(AccountMapper.class);
     private final StudentMapper studentMapper = MapperProxyFactory.getMapper(StudentMapper.class);
+
     @Override
     public Student getInfo(int id) {
         try {

@@ -19,6 +19,7 @@ import java.util.Random;
 public class TeacherServiceImpl implements TeacherService {
     private final AccountMapper accountMapper = MapperProxyFactory.getMapper(AccountMapper.class);
     private final TeacherMapper teacherMapper = MapperProxyFactory.getMapper(TeacherMapper.class);
+
     @Override
     public Teacher getInfo(int id) {
         return accountMapper.getTeacherByID(id);
