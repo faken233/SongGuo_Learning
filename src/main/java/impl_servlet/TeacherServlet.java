@@ -8,7 +8,9 @@ import pojo.question.MultipleChoiceQuestion;
 import pojo.question.Question;
 import pojo.question.ShortAnswerQuestion;
 import pojo.question.TrueFalseQuestion;
+import service.DiscussionService;
 import service.TeacherService;
+import service.impl.DiscussionServiceImpl;
 import service.impl.TeacherServiceImpl;
 
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +25,7 @@ import java.util.List;
 public class TeacherServlet extends TeacherBaseServlet {
 
     private final TeacherService teacherService = new TeacherServiceImpl();
+    private final DiscussionService discussionService = new DiscussionServiceImpl();
 
     public void getInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int id = Integer.parseInt(req.getParameter("id"));
@@ -144,6 +147,31 @@ public class TeacherServlet extends TeacherBaseServlet {
             List<Student> enrolledStudentsByCourseID = teacherService.getEnrolledStudentsByCourseID(courseID, currentPage, pageSize);
             resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", enrolledStudentsByCourseID)));
         } catch (IOException e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addReplyToCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String s = req.getReader().readLine();
+        DiscussionReply discussionReply = JSON.parseObject(s, DiscussionReply.class);
+        try {
+            discussionService.addOneReplyToCourseDiscussion(discussionReply);
+            resp.getWriter().write(JSON.toJSONString(Result.success("ADD_OK")));
+        } catch (Exception e) {
+            resp.getWriter().write(JSON.toJSONString(Result.error("ADD_ERROR")));
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void getCourseReplies(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        int courseID = Integer.parseInt(req.getParameter("courseID"));
+        int currentPage = Integer.parseInt(req.getParameter("currentPage"));
+        int pageSize = Integer.parseInt(req.getParameter("pageSize"));
+        try {
+            List<DiscussionReply> courseReplies = discussionService.getCourseReplies(courseID, currentPage, pageSize);
+            resp.getWriter().write(JSON.toJSONString(Result.success("SELECT_OK", courseReplies)));
+        } catch (Exception e) {
             resp.getWriter().write(JSON.toJSONString(Result.error("SELECT_ERROR")));
             throw new RuntimeException(e);
         }

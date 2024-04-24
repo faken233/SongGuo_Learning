@@ -30,8 +30,6 @@ public class StudentServlet extends StudentBaseServlet {
             resp.getWriter().write(JSON.toJSONString(Result.error("STUDENT_INFO_GET_ERROR")));
             throw new RuntimeException(e);
         }
-
-
     }
 
     public void updateInfo(HttpServletRequest req, HttpServletResponse resp) throws IOException {
