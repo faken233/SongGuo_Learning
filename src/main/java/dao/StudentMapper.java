@@ -16,8 +16,8 @@ import java.util.List;
 public interface StudentMapper {
 
     // 修改学生信息
-    @UpdateFaken("update students set name = #{name}, grade = #{grade}, className = #{className} where studentID = #{studentID}")
-    void updateStudent(@ParamFaken("name") String name, @ParamFaken("grade") String grade, @ParamFaken("className") String className, @ParamFaken("studentID") Integer id);
+    @UpdateFaken("update students set grade = #{grade}, className = #{className} where studentID = #{studentID}")
+    void updateStudent(@ParamFaken("grade") String grade, @ParamFaken("className") String className, @ParamFaken("studentID") Integer id);
 
     // 查找在开课时间内的可参与的课程
     @SelectFaken("select * from courses where endDateTime > NOW()")
