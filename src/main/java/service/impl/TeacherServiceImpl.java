@@ -31,7 +31,6 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void updateInfo(Teacher teacher) {
 
-        String name = teacher.getname();
         String email = teacher.getemail();
         String qq = teacher.getQq();
         String description = teacher.getDescription();
@@ -39,7 +38,7 @@ public class TeacherServiceImpl implements TeacherService {
 
         log.info("教师ID为{}的用户修改了个人信息", id);
 
-        teacherMapper.updateTeacher(name, email, qq, description, id);
+        teacherMapper.updateTeacher(email, qq, description, id);
     }
 
     @Override

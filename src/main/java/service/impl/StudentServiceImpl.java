@@ -31,7 +31,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void updateInfo(Student student) {
 
-        String studentName = student.getName();
         String grade = student.getGrade();
         String className = student.getClassName();
         Integer studentID = student.getStudentID();
@@ -39,7 +38,7 @@ public class StudentServiceImpl implements StudentService {
         log.info("学生ID为{}的用户修改了个人信息", studentID);
 
         try {
-            studentMapper.updateStudent(studentName, grade, className, studentID);
+            studentMapper.updateStudent(grade, className, studentID);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

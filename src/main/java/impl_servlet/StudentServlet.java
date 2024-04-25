@@ -37,9 +37,9 @@ public class StudentServlet extends StudentBaseServlet {
         Student student = JSON.parseObject(s, Student.class);
         try {
             studentService.updateInfo(student);
-            resp.getWriter().write( JSON.toJSONString(Result.success("UPDATE_STUDENT_INFO_OK")));
+            resp.getWriter().write( JSON.toJSONString(Result.success("UPDATE_OK")));
         } catch (Exception e) {
-            resp.getWriter().write(JSON.toJSONString(Result.error("UPDATE_STUDENT_INFO_ERROR")));
+            resp.getWriter().write(JSON.toJSONString(Result.error("UPDATE_ERROR")));
             throw new RuntimeException(e);
         }
     }

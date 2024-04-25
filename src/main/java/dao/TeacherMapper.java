@@ -15,9 +15,8 @@ import java.util.List;
 public interface TeacherMapper {
 
     // 更新教师数据
-    @UpdateFaken("update teachers set name = #{name}, email = #{email}, qq = #{qq}, description = #{description} where teacherID = #{teacherID}")
-    void updateTeacher(@ParamFaken("name")        String name,
-                      @ParamFaken("email")       String email,
+    @UpdateFaken("update teachers set email = #{email}, qq = #{qq}, description = #{description} where teacherID = #{teacherID}")
+    void updateTeacher(@ParamFaken("email")       String email,
                       @ParamFaken("qq")          String qq,
                       @ParamFaken("description") String description,
                       @ParamFaken("teacherID")   Integer id);

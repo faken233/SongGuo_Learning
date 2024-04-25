@@ -49,7 +49,6 @@ public class TeacherServlet extends TeacherBaseServlet {
             resp.getWriter().write(JSON.toJSONString(Result.error("UPDATE_ERROR")));
             throw new RuntimeException(e);
         }
-
     }
 
     public void addCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -104,7 +103,6 @@ public class TeacherServlet extends TeacherBaseServlet {
             resp.getWriter().write(JSON.toJSONString(Result.error("DELETE_ERROR")));
             throw new RuntimeException(e);
         }
-
     }
 
     public void selectCourses(HttpServletRequest req, HttpServletResponse resp) throws IOException {
