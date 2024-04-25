@@ -34,12 +34,7 @@ public class DiscussionServiceImpl implements DiscussionService {
     }
 
     @Override
-    public void deleteOneReplyInCourse(DiscussionReply discussionReply) {
-
-        int courseID = discussionReply.getCourseID();
-        int replierID = discussionReply.getReplierID();
-        Timestamp replyDateTime = discussionReply.getReplyDateTime();
-
+    public void deleteOneReplyInCourse(int courseID, int replierID, Timestamp replyDateTime) {
         log.info("ID为{}的用户删除了一条在ID为{}的课程上的评论", replierID, courseID);
 
         discussionMapper.deleteOneReplyInCourse(courseID, replierID, replyDateTime);
