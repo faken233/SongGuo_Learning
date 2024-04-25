@@ -51,7 +51,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void deleteCourse(int courseID) {
-        // 先删除题目
+        // 删除题目
         List<Chapter> chapters = teacherMapper.selectChaptersByCourseID(courseID);
         List<Integer> chapterIDs = new ArrayList<>();
 
@@ -69,6 +69,9 @@ public class TeacherServiceImpl implements TeacherService {
 
         // 再删除章节
         teacherMapper.deleteChaptersByCourseID(courseID);
+
+        // 删除参与课程信息
+        teacherMapper.deleteEnrolledCourse(courseID);
 
         // 最后删除课程信息
         teacherMapper.deleteCourse(courseID);

@@ -25,7 +25,7 @@ public interface DiscussionMapper {
                                            @ParamFaken("pageSize") Integer pageSize);
 
     // 删除某条reply 由于取消了reply的primary key 故需要比对课程ID, 回复者ID以及回复时间
-    @DeleteFaken("delete from discussionreplies where ")
+    @DeleteFaken("delete from discussionreplies where courseID = #{courseID} and replierID = #{replierID} and replyDateTime = #{replyDateTime}")
     void deleteOneReplyInCourse(@ParamFaken("courseID")      Integer courseID,
                                 @ParamFaken("replierID")     Integer replierID,
                                 @ParamFaken("replyDateTime") Timestamp replyDateTime);

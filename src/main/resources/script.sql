@@ -1,3 +1,5 @@
+# noinspection SpellCheckingInspectionForFile
+
 create table chapterlearningprogress
 (
     studentID   int   not null,
@@ -42,29 +44,18 @@ create index fk_teacherID
 
 create table discussionreplies
 (
-    replyID       int auto_increment
-        primary key,
-    discussionID  int      null,
-    replierID     int      null,
-    content       text     null,
-    replyDateTime datetime null
-);
-
-create index fk_discussionID
-    on discussionreplies (discussionID);
-
-create index fk_replierID
-    on discussionreplies (replierID);
-
-create table discussions
-(
-    discussionID int auto_increment
-        primary key,
-    courseID     int null
+    replierID     int         not null,
+    replierName   varchar(20) not null,
+    content       text        not null,
+    replyDateTime datetime    not null,
+    courseID      int         not null
 );
 
 create index fk_courseID
-    on discussions (courseID);
+    on discussionreplies (courseID);
+
+create index fk_replierID
+    on discussionreplies (replierID);
 
 create table enrolledcourses
 (

@@ -55,11 +55,11 @@ public interface TeacherMapper {
 
     // 根据章节删除简答题
     @DeleteFaken("delete from shortanswerquestions where chapterID = #{chapterID}")
-    void deleteShortAnswerQuestionsByChapterID(@ParamFaken("courseID") Integer chapterID);
+    void deleteShortAnswerQuestionsByChapterID(@ParamFaken("chapterID") Integer chapterID);
 
     // 根据章节删除选择题
     @DeleteFaken("delete from multiplechoicequestions where chapterID = #{chapterID}")
-    void deleteMultipleChoiceQuestionsByChapterID(@ParamFaken("courseID") Integer chapterID);
+    void deleteMultipleChoiceQuestionsByChapterID(@ParamFaken("chapterID") Integer chapterID);
 
     // 删除一道判断题
     @DeleteFaken("delete from truefalsequestions where questionID = #{questionID}")

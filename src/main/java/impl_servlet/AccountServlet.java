@@ -76,18 +76,16 @@ public class AccountServlet extends AccountBaseServlet {
     }
 
     public void loginValidation(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String userid = req.getParameter("userid");
+        String certificate = req.getParameter("certificate");
         String type = req.getParameter("type");
         try {
-            Object o = accountService.loginValidation(userid, type);
+            Object o = accountService.loginValidation(certificate, type);
             if (o != null) {
                 // 存在用户
-                String rs = JSON.toJSONString(Result.success("LOGIN_VALIDATION_SUCCESS"));
-                resp.getWriter().write(rs);
+                resp.getWriter().write(JSON.toJSONString(Result.success("LOGIN_VALIDATION_SUCCESS")));
             }
             else {
-                String rs = JSON.toJSONString(Result.error("LOGIN_VALIDATION_FAILED"));
-                resp.getWriter().write(rs);
+                resp.getWriter().write(JSON.toJSONString(Result.error("LOGIN_VALIDATION_FAILED")));
             }
         } catch (IOException e) {
             resp.getWriter().write(JSON.toJSONString(Result.error("LOGIN_FAILED")));
@@ -97,19 +95,25 @@ public class AccountServlet extends AccountBaseServlet {
 
     public void loginConfirmation(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String type = req.getParameter("type");
-        String userid = req.getParameter("userid");
+        String certificate = req.getParameter("certificate");
         String password = req.getParameter("password");
         try {
-            Object o = accountService.loginConfirmation(userid, password, type);
+            Object o = accountService.loginConfirmation(certificate, password, type);
             if (o instanceof Teacher || o instanceof Student) {
                 Map<String, Object> claims = new HashMap<>();
-                claims.put("userid", userid);
+                claims.put("userData", o);
                 String Jwt = Jwts.builder()
                         .signWith(SignatureAlgorithm.HS256, ConstString.JwtKey)// 签名算法 密钥
                         .setClaims(claims)// 载荷
                         .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000 * 3))// 三小时有效期
                         .compact();
-                String rs = JSON.toJSONString(Result.success("LOGIN_CONFIRMATION_SUCCESS", Jwt));
+                int id;
+                if (o instanceof Teacher) {
+                    id = ((Teacher) o).getteacherID();
+                } else {
+                    id = ((Student) o).getStudentID();
+                }
+                String rs = JSON.toJSONString(Result.success(String.valueOf(id), Jwt));
                 resp.getWriter().write(rs);
             } else if (o == null) {
                 String rs = JSON.toJSONString(Result.error("LOGIN_CONFIRMATION_FAILED"));

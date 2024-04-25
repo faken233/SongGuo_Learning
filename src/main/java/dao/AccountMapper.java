@@ -17,11 +17,17 @@ public interface AccountMapper {
 
     // 登陆校验
     @SelectFaken("select * from teachers where teacherID = #{teacherID} and encryptedPassword = #{encryptedPassword}")
-    Teacher getTeacherByIDAndPassword(@ParamFaken("teacherID") int teacherID, @ParamFaken("encryptedPassword") String encryptedPassword);
+    Teacher getTeacherByIDAndPassword(@ParamFaken("teacherID") Integer teacherID, @ParamFaken("encryptedPassword") String encryptedPassword);
+
+    @SelectFaken("select * from teachers where phoneNumber = #{phoneNumber} and encryptedPassword = #{encryptedPassword}")
+    Teacher getTeacherByPhoneNumberAndPassword(@ParamFaken("phoneNumber") String phoneNumber, @ParamFaken("encryptedPassword") String encryptedPassword);
 
     // 登陆校验
     @SelectFaken("select * from students where studentID = #{studentID} and encryptedPassword = #{encryptedPassword}")
-    Student getStudentByIDAndPassword(@ParamFaken("studentID") int studentID, @ParamFaken("encryptedPassword") String encryptedPassword);
+    Student getStudentByIDAndPassword(@ParamFaken("studentID") Integer studentID, @ParamFaken("encryptedPassword") String encryptedPassword);
+
+    @SelectFaken("select * from students where phoneNumber = #{phoneNumber} and encryptedPassword = #{encryptedPassword}")
+    Student getStudentByPhoneNumberAndPassword(@ParamFaken("phoneNumber") String phoneNumber, @ParamFaken("encryptedPassword") String encryptedPassword);
 
     // 后续业务可根据ID查找教师信息
     @SelectFaken("select * from teachers where teacherID = #{teacherID}")

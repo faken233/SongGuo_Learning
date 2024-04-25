@@ -66,19 +66,47 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Object loginValidation(String userID, String type) {
+    public Object loginValidation(String certificate, String type) {
         // 根据类型去查找对应用户数据库, 没有相应数据则返回null
-        return Integer.parseInt(type) == ConstNum.Teacher ? accountMapper.getTeacherByID(Integer.parseInt(userID)) : accountMapper.getStudentByID(Integer.parseInt(userID));
+        // 先判断certificate是ID还是电话
+
+        if (certificate.length() == 9) {
+            // 长度为9, 是ID, 从类型对应的用户表用ID查询
+            int id = Integer.parseInt(certificate);
+            if (Integer.parseInt(type) == ConstNum.Teacher) {
+                // 老师
+                return accountMapper.getTeacherByID(id);
+            } else {
+                return accountMapper.getStudentByID(id);
+            }
+        } else if (certificate.length() == 11) {
+            // 长度为11, 是电话号码, 从类型对应的用户表用电话查询
+            if (Integer.parseInt(type) == ConstNum.Teacher) {
+                return accountMapper.getTeacherByPhoneNumber(certificate);
+            } else {
+                return accountMapper.getStudentByPhoneNumber(certificate);
+            }
+        }
+        return null;
     }
 
     @Override
-    public Object loginConfirmation(String userid, String password, String type) {
+    public Object loginConfirmation(String certificate, String password, String type) {
         // 账户密码校验
         if (Integer.parseInt(type) == ConstNum.Teacher) {
-            return accountMapper.getTeacherByIDAndPassword(Integer.parseInt(userid), password);
+            if (certificate.length() == 9) {
+                return accountMapper.getTeacherByIDAndPassword(Integer.parseInt(certificate), password);
+            } else {
+                return accountMapper.getTeacherByPhoneNumberAndPassword(certificate, password);
+            }
         }else if (Integer.parseInt(type) == ConstNum.Student) {
-            return accountMapper.getStudentByIDAndPassword(Integer.parseInt(userid), password);
-        }else return null;
+            if (certificate.length() == 9) {
+                return accountMapper.getStudentByIDAndPassword(Integer.parseInt(certificate), password);
+            } else {
+                return accountMapper.getStudentByPhoneNumberAndPassword(certificate, password);
+            }
+        }
+        return null;
     }
 
     public String generateID(boolean isTeacher) {

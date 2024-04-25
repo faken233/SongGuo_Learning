@@ -77,7 +77,7 @@ public class StudentServiceImpl implements StudentService {
         Course course = studentMapper.selectCourseByCourseID(courseID);
         int maxStudents = course.getMaxStudents();
         int enrolledCount = enrolledCourseMaps.size();
-        if (enrolledCount > maxStudents) {
+        if (enrolledCount >= maxStudents) {
             return 0;
         } else {
             log.info("学生ID为{}的学生选择参加课程ID为{}的课程", studentID, courseID);
