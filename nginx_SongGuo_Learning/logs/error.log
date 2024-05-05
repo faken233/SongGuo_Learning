@@ -1,0 +1,2 @@
+2024/04/29 17:06:01 [emerg] 1224#8044: CreateFile() "C:\Users\faken233\Desktop\main分支\nginx_SongGuo_Learning/conf/nginx.conf" failed (1113: No mapping for the Unicode character exists in the target multi-byte code page)
+2024/04/29 17:07:01 [emerg] 15116#2164: CreateFile() "C:\Users\faken233\Desktop\main分支\nginx_SongGuo_Learning/conf/nginx.conf" failed (1113: No mapping for the Unicode character exists in the target multi-byte code page)
